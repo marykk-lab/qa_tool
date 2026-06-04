@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 1 — Foundation
-current_plan: None (planning not yet started)
-status: unknown
-last_updated: "2026-06-04T16:55:22.233Z"
+current_plan: 01-01 Walking Skeleton
+status: awaiting_human_checkpoint
+last_updated: "2026-06-04T18:00:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 0
@@ -31,9 +31,9 @@ progress:
 ## Current Position
 
 **Current Phase:** 1 — Foundation
-**Current Plan:** None (planning not yet started)
-**Phase Status:** Not started
-**Overall Status:** Roadmap created, awaiting phase planning
+**Current Plan:** 01-01 Walking Skeleton
+**Phase Status:** In progress — awaiting Vercel deploy checkpoint (Task 3)
+**Overall Status:** Tasks 1-2 complete, paused at human checkpoint
 
 ```
 Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
@@ -45,7 +45,7 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Foundation | Not started |
+| 1 | Foundation | In progress (awaiting Vercel checkpoint) |
 | 2 | Wizard | Not started |
 | 3 | Generation & Output | Not started |
 
@@ -69,11 +69,15 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 - Test case library in `/data/test-cases/*.json` — editable without recompile
 - Deterministic generation only (no AI)
 - UI language: Ukrainian only (v1)
+- Tailwind v4 used (create-next-app default) — `@import "tailwindcss"` syntax, no tailwind.config.ts
+- TestCase type uses Ukrainian field names as keys (Назва, Кроки, etc.) matching GEN-03
+- JSON read via Node fs in server context for QA-editable JSON without recompile
+- Next.js default Vercel deploy mode (server-capable), not static export
 
 ### Active Todos
 
 - Await Feedboon style reference from client before finalizing Phase 3 UI
-- Confirm Vercel project/org settings before Phase 1 deploy step
+- BLOCKING: Human must deploy to Vercel (`npx vercel --prod`) and confirm live URL to complete Phase 1 Plan 01
 
 ### Blockers
 
@@ -89,10 +93,13 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 
 ## Session Continuity
 
-**To resume:** Start with `/gsd-plan-phase 1` to plan the Foundation phase.
+**To resume:** After Vercel deploy confirmed, provide the live URL to mark Plan 01 complete.
 
 **Context for next session:**
 
 - Roadmap has 3 phases at coarse granularity
 - Phase 1 = scaffold only; Phases 2-3 carry all 19 requirements
-- No plans exist yet; no code written yet
+- Phase 1 Plan 01 (Walking Skeleton) is 2/3 tasks complete — paused at Vercel deploy checkpoint
+- TestCase schema established at src/lib/types.ts (6 Ukrainian fields)
+- JSON data convention: /data/test-cases/*.json read via fs in server context
+- Next.js 16 + Tailwind v4; npm run build passes

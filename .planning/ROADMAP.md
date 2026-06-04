@@ -29,7 +29,7 @@
   3. `/data/test-cases/` directory exists with at least one sample JSON file following the agreed schema (ID, Назва, Передумови, Кроки, Очікуваний результат, Пріоритет)
   4. Tailwind CSS is configured and a sample element renders with Tailwind classes correctly
 **Plans**: 1 plan
-  - [ ] 01-PLAN-01.md — Walking Skeleton: Next.js + Tailwind scaffold, JSON data layer read/render, Vercel deploy
+  - [~] 01-PLAN-01.md — Walking Skeleton: Next.js + Tailwind scaffold, JSON data layer read/render, Vercel deploy (Tasks 1-2 done, Task 3 awaiting human deploy)
 
 ### Phase 2: Wizard
 **Goal**: A user can navigate the full multi-step wizard for both project types, make all selections, and reach the final step with their choices preserved.
@@ -65,7 +65,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/1 | In progress (awaiting Vercel checkpoint) | - |
 | 2. Wizard | 0/? | Not started | - |
 | 3. Generation & Output | 0/? | Not started | - |
 
