@@ -45,9 +45,16 @@
   6. JSON library files in `/data/test-cases/` are populated with full test case objects using correct ID prefixes (TC-CAT, TC-PDP, TC-CART, TC-CHK, TC-AUTH, TC-SRCH, TC-BLOG, TC-FORM, TC-LANG, TC-CPN)
   7. shadcn/ui components (Button, Card, Badge, Checkbox, RadioGroup, Progress, Sonner) are installed and used throughout the wizard
 **Plans**: 3 plans
-  - [ ] 02-01-PLAN.md — Foundation: shadcn/ui install, Feedboon dark theme, WizardState types + config, array-aware loader, RED tests
+  **Wave 1:**
+  - [x] 02-01-PLAN.md — Foundation: shadcn/ui install, Feedboon dark theme, WizardState types + config, array-aware loader, RED tests
+  **Wave 2** *(blocked on Wave 1 completion)*:
   - [ ] 02-02-PLAN.md — Test-case JSON library: 10 module files with correct ID prefixes + schema/prefix loader test
   - [ ] 02-03-PLAN.md — Wizard vertical slice: 5 step components, navigation/progress, Sonner toasts, page wiring
+
+  **Cross-cutting constraints:**
+  - `hasDetailStep(state)` must be called in `handleNext()` — step 4 skip is mandatory (WIZ-04, WIZ-07)
+  - All UI copy must be Ukrainian only (CLAUDE.md constraint)
+  - `dangerouslySetInnerHTML` must never be used in any wizard component
 **UI hint**: yes
 
 ### Phase 3: Generation & Output
@@ -72,7 +79,7 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
-| 2. Wizard | 0/3 | Planned | - |
+| 2. Wizard | 1/3 | Executing | - |
 | 3. Generation & Output | 0/? | Not started | - |
 
 ---
