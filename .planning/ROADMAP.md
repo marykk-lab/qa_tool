@@ -48,7 +48,7 @@
   **Wave 1:**
   - [x] 02-01-PLAN.md — Foundation: shadcn/ui install, Feedboon dark theme, WizardState types + config, array-aware loader, RED tests
   **Wave 2** *(blocked on Wave 1 completion)*:
-  - [ ] 02-02-PLAN.md — Test-case JSON library: 10 module files with correct ID prefixes + schema/prefix loader test
+  - [x] 02-02-PLAN.md — Test-case JSON library: 10 module files with correct ID prefixes + schema/prefix loader test
   - [ ] 02-03-PLAN.md — Wizard vertical slice: 5 step components, navigation/progress, Sonner toasts, page wiring
 
   **Cross-cutting constraints:**
@@ -79,7 +79,7 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
-| 2. Wizard | 1/3 | Executing | - |
+| 2. Wizard | 2/3 | Executing | - |
 | 3. Generation & Output | 0/? | Not started | - |
 
 ---

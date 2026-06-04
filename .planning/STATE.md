@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 2 — Wizard
-current_plan: Phase 2 Plan 01 complete — executing Plan 02
+current_plan: Phase 2 Plan 02 complete — executing Plan 03
 status: ready_to_execute
-last_updated: "2026-06-04T22:00:00.000Z"
+last_updated: "2026-06-04T23:00:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 4
-  completed_plans: 1
-  percent: 33
+  completed_plans: 2
+  percent: 50
 ---
 
 # Project State: QA Test Constructor
@@ -31,12 +31,12 @@ progress:
 ## Current Position
 
 **Current Phase:** 2 — Wizard
-**Current Plan:** Plan 02 (Test-case JSON library) — Plan 01 complete
+**Current Plan:** Plan 03 (Wizard vertical slice) — Plans 01 and 02 complete
 **Phase Status:** Executing ✓
-**Overall Status:** Phase 2 executing — 1/3 plans complete
+**Overall Status:** Phase 2 executing — 2/3 plans complete
 
 ```
-Progress: [████░░░░░░] 40% (1/3 phases complete, Phase 2 in progress)
+Progress: [█████░░░░░] 50% (1/3 phases complete, Phase 2 in progress — 2/3 plans done)
 ```
 
 ---
@@ -53,10 +53,10 @@ Progress: [████░░░░░░] 40% (1/3 phases complete, Phase 2 in 
 
 ## Performance Metrics
 
-- Plans executed: 2
+- Plans executed: 3
 - Phases complete: 1/3
 - Requirements mapped: 19/19
-- Requirements delivered: 4/19 (WIZ-08, WIZ-09, UI-03, GEN-01 — delivered by Phase 2 Plan 01)
+- Requirements delivered: 7/19 (WIZ-08, WIZ-09, UI-03, GEN-01 — Plan 01; GEN-01, GEN-03, GEN-04 — Plan 02)
 
 ---
 
@@ -79,6 +79,8 @@ Progress: [████░░░░░░] 40% (1/3 phases complete, Phase 2 in 
 - Feedboon dark theme in unconditional :root (oklch values) — no light mode toggle
 - MultilangDetails.languageCount as "2"|"3"|"4plus" string literal union (RadioGroup value compatibility)
 - WizardState is ephemeral per-session (useState, no persistence) — no routing or global store needed
+- sample.json deleted; TC-CAT-001 migrated to catalog.json first entry — prevents duplicate TC-CAT-001 in loadAllTestCases output
+- Each module gets its own JSON file with per-module ID prefix; 45 total test cases authored (Plan 02)
 
 ### Phase 2 Pre-Planning Notes (from task spec review)
 
@@ -107,12 +109,13 @@ Progress: [████░░░░░░] 40% (1/3 phases complete, Phase 2 in 
 
 ## Session Continuity
 
-**To resume:** Run `/gsd:execute-phase 2` to execute Plan 02 (test-case JSON library).
+**To resume:** Run `/gsd:execute-phase 2` to execute Plan 03 (wizard vertical slice).
 
 **Context for next session:**
 
 - Phase 2 Plan 01 complete: shadcn/ui installed (8 components), Feedboon dark theme applied, WizardState types + wizard-config helpers + array-aware loader established
-- Phase 2 Plan 02 = test-case JSON library (10 module files with correct ID prefixes)
+- Phase 2 Plan 02 complete: 10 module JSON files in data/test-cases/ (45 total test cases), sample.json removed, extended loader test suite (46/46 passing)
 - Phase 2 Plan 03 = wizard vertical slice (5 step components, navigation, page wiring)
 - shadcn components are base-nova preset but functionally identical to new-york
 - WizardState contract: src/lib/types.ts; platform/module config: src/constants/wizard-config.ts
+- Test case IDs: TC-CAT (5), TC-PDP (5), TC-CART (4), TC-CHK (6), TC-AUTH (5), TC-SRCH (4), TC-BLOG (4), TC-FORM (4), TC-LANG (4), TC-CPN (4) — 45 total
