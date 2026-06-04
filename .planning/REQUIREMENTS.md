@@ -64,31 +64,31 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| WIZ-01 | — | Pending |
-| WIZ-02 | — | Pending |
-| WIZ-03 | — | Pending |
-| WIZ-04 | — | Pending |
-| WIZ-05 | — | Pending |
-| WIZ-06 | — | Pending |
-| WIZ-07 | — | Pending |
-| WIZ-08 | — | Pending |
-| WIZ-09 | — | Pending |
-| GEN-01 | — | Pending |
-| GEN-02 | — | Pending |
-| GEN-03 | — | Pending |
-| GEN-04 | — | Pending |
-| OUT-01 | — | Pending |
-| OUT-02 | — | Pending |
-| OUT-03 | — | Pending |
-| OUT-04 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
+| WIZ-01 | Phase 2 | Pending |
+| WIZ-02 | Phase 2 | Pending |
+| WIZ-03 | Phase 2 | Pending |
+| WIZ-04 | Phase 2 | Pending |
+| WIZ-05 | Phase 2 | Pending |
+| WIZ-06 | Phase 2 | Pending |
+| WIZ-07 | Phase 2 | Pending |
+| WIZ-08 | Phase 2 | Pending |
+| WIZ-09 | Phase 2 | Pending |
+| GEN-01 | Phase 2 | Pending |
+| GEN-02 | Phase 3 | Pending |
+| GEN-03 | Phase 2 | Pending |
+| GEN-04 | Phase 2 | Pending |
+| OUT-01 | Phase 3 | Pending |
+| OUT-02 | Phase 3 | Pending |
+| OUT-03 | Phase 3 | Pending |
+| OUT-04 | Phase 3 | Pending |
+| UI-01 | Phase 3 | Pending |
+| UI-02 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 19 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 19 ⚠️
+- Mapped to phases: 19 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-04*
-*Last updated: 2026-06-04 after initial definition*
+*Last updated: 2026-06-04 after roadmap creation*
