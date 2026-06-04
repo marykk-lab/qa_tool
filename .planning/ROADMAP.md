@@ -3,14 +3,14 @@
 **Project:** QA Test Constructor
 **Core Value:** QA-спеціаліст заповнює wizard за 2 хвилини і отримує готову таблицю тест кейсів у форматі Markdown — без написання вручну.
 **Granularity:** Coarse
-**Total v1 Requirements:** 19
-**Coverage:** 19/19 ✓
+**Total v1 Requirements:** 22
+**Coverage:** 22/22 ✓
 
 ---
 
 ## Phases
 
-- [ ] **Phase 1: Foundation** - Next.js + Tailwind scaffold, project structure, JSON library skeleton, Vercel deployment config
+- [x] **Phase 1: Foundation** - Next.js + Tailwind scaffold, project structure, JSON library skeleton, Vercel deployment config
 - [ ] **Phase 2: Wizard** - Full multi-step question flow for both project types with navigation, progress indicator, and test case JSON library
 - [ ] **Phase 3: Generation & Output** - Deterministic case generation, result table, Markdown export actions, Feedboon styling, tablet layout
 
@@ -35,27 +35,33 @@
 **Goal**: A user can navigate the full multi-step wizard for both project types, make all selections, and reach the final step with their choices preserved.
 **Mode:** mvp
 **Depends on**: Phase 1
-**Requirements**: WIZ-01, WIZ-02, WIZ-03, WIZ-04, WIZ-05, WIZ-06, WIZ-07, WIZ-08, WIZ-09, GEN-01, GEN-03, GEN-04
+**Requirements**: WIZ-01, WIZ-02, WIZ-03, WIZ-04, WIZ-05, WIZ-06, WIZ-07, WIZ-08, WIZ-09, GEN-01, GEN-03, GEN-04, UI-03
 **Success Criteria** (what must be TRUE):
   1. User selects "E-commerce" or "Інформаційний сайт" on step 1 and the correct branch of questions follows
-  2. User can select multiple modules from the correct list (10 for E-commerce, 7 for Інформаційний сайт) and detail sub-questions appear only for qualifying modules (Checkout / Особистий кабінет / Пошук for E-commerce; Контактна форма / Багатомовність for Інформаційний сайт)
-  3. "Назад" returns to the previous step with all prior selections intact; "Далі" only advances when required selections are made
-  4. The progress indicator ("Крок N з M") updates correctly on every step
-  5. JSON library files in `/data/test-cases/` are populated with full test case objects using correct ID prefixes (TC-CAT, TC-PDP, TC-CART, TC-CHK, TC-AUTH, TC-SRCH, TC-BLOG, TC-FORM, TC-LANG, TC-CPN)
-**Plans**: TBD
+  2. User can select the platform (WooCommerce/Shopify/Інша for E-commerce; WordPress/Інша for Інфо-сайт) on step 2
+  3. User can select multiple modules from the correct list (10 for E-commerce, 7 for Інформаційний сайт) and detail sub-questions appear only for qualifying modules (Checkout / Особистий кабінет / Пошук for E-commerce; Контактна форма / Багатомовність for Інформаційний сайт)
+  4. "Назад" returns to the previous step with all prior selections intact; "Далі" only advances when required selections are made
+  5. The progress indicator ("Крок N з M") updates correctly on every step
+  6. JSON library files in `/data/test-cases/` are populated with full test case objects using correct ID prefixes (TC-CAT, TC-PDP, TC-CART, TC-CHK, TC-AUTH, TC-SRCH, TC-BLOG, TC-FORM, TC-LANG, TC-CPN)
+  7. shadcn/ui components (Button, Card, Badge, Checkbox, RadioGroup, Progress, Sonner) are installed and used throughout the wizard
+**Plans**: 3 plans
+  - [ ] 02-01-PLAN.md — Foundation: shadcn/ui install, Feedboon dark theme, WizardState types + config, array-aware loader, RED tests
+  - [ ] 02-02-PLAN.md — Test-case JSON library: 10 module files with correct ID prefixes + schema/prefix loader test
+  - [ ] 02-03-PLAN.md — Wizard vertical slice: 5 step components, navigation/progress, Sonner toasts, page wiring
 **UI hint**: yes
 
 ### Phase 3: Generation & Output
 **Goal**: After completing the wizard, the user sees a complete table of generated test cases and can copy or download it as Markdown, then restart.
 **Mode:** mvp
 **Depends on**: Phase 2
-**Requirements**: GEN-02, OUT-01, OUT-02, OUT-03, OUT-04, UI-01, UI-02
+**Requirements**: GEN-02, OUT-01, OUT-02, OUT-03, OUT-04, OUT-05, UI-01, UI-02
 **Success Criteria** (what must be TRUE):
   1. The result screen displays a table of all test cases matching the user's module selections, with correct columns (ID, Назва, Передумови, Кроки, Очікуваний результат, Пріоритет)
-  2. "Copy Markdown" copies a valid Markdown table to the clipboard and the user sees a confirmation (button state or toast)
+  2. "Copy Markdown" copies a valid Markdown table to the clipboard and the user sees a confirmation (Sonner toast)
   3. "Download .md" downloads a file named `test-cases_{type}_{date}.md` containing the same Markdown table
-  4. "Почати заново" resets all state and returns to step 1 of the wizard
-  5. The UI matches the Feedboon style reference (colors, typography, spacing, button styles) and the layout renders correctly on desktop and tablet (≥768px)
+  4. "Export to Notion (.csv)" downloads a UTF-8 CSV file with columns ID, Name, Preconditions, Steps, Expected, Priority, Module — importable into Notion as a database
+  5. "Почати заново" resets all state and returns to step 1 of the wizard
+  6. The UI applies the Feedboon dark theme: `#0a0a0a` background, `#171717` cards, `#3ecf8e` green accent, light text; renders correctly on desktop and tablet (≥768px)
 **Plans**: TBD
 **UI hint**: yes
 
@@ -65,8 +71,8 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/1 | In progress (awaiting Vercel checkpoint) | - |
-| 2. Wizard | 0/? | Not started | - |
+| 1. Foundation | 1/1 | Complete | 2026-06-04 |
+| 2. Wizard | 0/3 | Planned | - |
 | 3. Generation & Output | 0/? | Not started | - |
 
 ---
