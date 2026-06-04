@@ -28,7 +28,8 @@
   2. Vercel deployment succeeds from the repository (or local export) and the placeholder page is accessible via URL
   3. `/data/test-cases/` directory exists with at least one sample JSON file following the agreed schema (ID, Назва, Передумови, Кроки, Очікуваний результат, Пріоритет)
   4. Tailwind CSS is configured and a sample element renders with Tailwind classes correctly
-**Plans**: TBD
+**Plans**: 1 plan
+  - [ ] 01-PLAN-01.md — Walking Skeleton: Next.js + Tailwind scaffold, JSON data layer read/render, Vercel deploy
 
 ### Phase 2: Wizard
 **Goal**: A user can navigate the full multi-step wizard for both project types, make all selections, and reach the final step with their choices preserved.
