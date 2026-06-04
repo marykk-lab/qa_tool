@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+current_phase: 1 — Foundation
+current_plan: None (planning not yet started)
+status: unknown
+last_updated: "2026-06-04T16:55:22.233Z"
+progress:
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 1
+  completed_plans: 0
+  percent: 0
+---
+
 # Project State: QA Test Constructor
 
 *Last updated: 2026-06-04*
@@ -47,6 +63,7 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 ## Accumulated Context
 
 ### Key Decisions
+
 - Next.js + Tailwind — matches Feedboon stack for future integration
 - All logic client-side, no backend
 - Test case library in `/data/test-cases/*.json` — editable without recompile
@@ -54,13 +71,16 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 - UI language: Ukrainian only (v1)
 
 ### Active Todos
+
 - Await Feedboon style reference from client before finalizing Phase 3 UI
 - Confirm Vercel project/org settings before Phase 1 deploy step
 
 ### Blockers
+
 - None currently
 
 ### Notes
+
 - Phase 1 is pure scaffold (no v1 requirement IDs assigned to it directly — it enables all downstream phases)
 - GEN-01, GEN-03, GEN-04 are in Phase 2 because the JSON library structure and schema must be established alongside the wizard that reads it
 - UI-01 depends on Feedboon style reference from client; Phase 3 can proceed with placeholder styles and be finalized once reference arrives
@@ -72,6 +92,7 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 **To resume:** Start with `/gsd-plan-phase 1` to plan the Foundation phase.
 
 **Context for next session:**
+
 - Roadmap has 3 phases at coarse granularity
 - Phase 1 = scaffold only; Phases 2-3 carry all 19 requirements
 - No plans exist yet; no code written yet
