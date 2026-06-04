@@ -30,7 +30,8 @@ export function getSampleTestCase(): TestCase {
 }
 
 /**
- * Loads all *.json files from data/test-cases/ and returns them as an array.
+ * Loads all *.json files from data/test-cases/ and returns a flat TestCase[].
+ * Handles both single-object JSON files and array JSON files.
  * Skips files that fail to parse (logs a warning to stderr).
  */
 export function loadAllTestCases(): TestCase[] {
@@ -40,10 +41,24 @@ export function loadAllTestCases(): TestCase[] {
   const results: TestCase[] = [];
   for (const file of files) {
     try {
-      results.push(loadTestCaseFile(file));
+      const raw = fs.readFileSync(path.join(dataDir, file), "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        results.push(...(parsed as TestCase[]));
+      } else {
+        results.push(parsed as TestCase);
+      }
     } catch (err) {
       console.error(`[test-cases] Failed to load ${file}:`, err);
     }
   }
   return results;
+}
+
+/**
+ * Loads test cases for a specific module by ID prefix.
+ * E.g., loadModuleTestCases("TC-CHK") returns all checkout test cases.
+ */
+export function loadModuleTestCases(prefix: string): TestCase[] {
+  return loadAllTestCases().filter((tc) => tc.ID.startsWith(prefix));
 }

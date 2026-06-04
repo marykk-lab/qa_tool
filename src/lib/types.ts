@@ -26,3 +26,52 @@ export type TestCase = {
   /** Test priority level */
   Пріоритет: "High" | "Medium" | "Low";
 };
+
+// ── Wizard Types ──────────────────────────────────────────────────
+
+export type ProjectType = "ecommerce" | "infosite";
+
+export type EcommercePlatform = "woocommerce" | "shopify" | "other";
+export type InfositePlatform = "wordpress" | "other";
+
+export type CheckoutDetails = {
+  hasGuestCheckout: boolean;
+  hasPromoCode: boolean;
+};
+export type AuthDetails = {
+  hasSocialLogin: boolean;
+  hasOrderHistory: boolean;
+};
+export type SearchDetails = {
+  hasAutoComplete: boolean;
+  hasFiltersInResults: boolean;
+};
+export type ContactFormDetails = {
+  hasFileUpload: boolean;
+  hasCaptcha: boolean;
+};
+export type MultilangDetails = {
+  languageCount: "2" | "3" | "4plus";
+};
+
+export type WizardState = {
+  projectType: ProjectType | null;
+  platform: EcommercePlatform | InfositePlatform | null;
+  modules: string[];
+  checkoutDetails: CheckoutDetails | null;
+  authDetails: AuthDetails | null;
+  searchDetails: SearchDetails | null;
+  contactFormDetails: ContactFormDetails | null;
+  multilangDetails: MultilangDetails | null;
+};
+
+export const INITIAL_WIZARD_STATE: WizardState = {
+  projectType: null,
+  platform: null,
+  modules: [],
+  checkoutDetails: null,
+  authDetails: null,
+  searchDetails: null,
+  contactFormDetails: null,
+  multilangDetails: null,
+};
