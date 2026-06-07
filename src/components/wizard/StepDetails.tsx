@@ -2,7 +2,6 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import type { WizardState } from "@/lib/types";
 
 type Props = {
@@ -194,15 +193,21 @@ export default function StepDetails({ state, onChange }: Props) {
             ).map((opt) => (
               <div
                 key={opt.value}
+                onClick={() =>
+                  onChange({
+                    multilangDetails: {
+                      languageCount: opt.value,
+                    },
+                  })
+                }
                 className="flex items-center space-x-3 min-h-[44px] border border-border rounded-md p-4 bg-card cursor-pointer"
               >
-                <RadioGroupItem value={opt.value} id={`lang-${opt.value}`} />
-                <Label
-                  htmlFor={`lang-${opt.value}`}
-                  className="text-base text-foreground cursor-pointer"
-                >
-                  {opt.label}
-                </Label>
+                <RadioGroupItem
+                  value={opt.value}
+                  id={`lang-${opt.value}`}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <span className="text-base text-foreground">{opt.label}</span>
               </div>
             ))}
           </RadioGroup>
@@ -226,15 +231,17 @@ function BooleanCheckbox({
   onCheckedChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-center space-x-3 min-h-[44px] border border-border rounded-md p-4 bg-card">
+    <div
+      onClick={() => onCheckedChange(!checked)}
+      className="flex items-center space-x-3 min-h-[44px] border border-border rounded-md p-4 bg-card cursor-pointer"
+    >
       <Checkbox
         id={id}
         checked={checked}
         onCheckedChange={(v) => onCheckedChange(v === true)}
+        onClick={(e) => e.stopPropagation()}
       />
-      <Label htmlFor={id} className="text-base text-foreground cursor-pointer">
-        {label}
-      </Label>
+      <span className="text-base text-foreground">{label}</span>
     </div>
   );
 }

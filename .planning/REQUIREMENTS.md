@@ -30,11 +30,13 @@
 - [ ] **OUT-02**: Кнопка "Copy Markdown" копіює таблицю у форматі Markdown в буфер обміну
 - [ ] **OUT-03**: Кнопка "Download .md" завантажує файл `test-cases_{type}_{date}.md`
 - [ ] **OUT-04**: Кнопка "Почати заново" скидає wizard і повертає до кроку 1
+- [ ] **OUT-05**: Кнопка "Export to Notion (.csv)" завантажує UTF-8 CSV з колонками ID, Name, Preconditions, Steps, Expected, Priority, Module — придатний для імпорту в Notion як database
 
 ### UI / NFR
 
-- [ ] **UI-01**: UI виконано у стилі Feedboon — кольори, кнопки, шрифти, відступи (референс надасть замовник до UI-фази)
+- [ ] **UI-01**: UI виконано у стилі Feedboon — темна тема: фон `#0a0a0a`, картки `#171717`, акцент `#3ecf8e` (зелений), світлий текст. Кнопки, шрифти, відступи відповідають Feedboon-дизайну (референс: `image.png`). Реалізація через Tailwind v4 `@theme {}` + shadcn/ui компоненти.
 - [ ] **UI-02**: Desktop-first верстка; коректне відображення на tablet (≥768px)
+- [ ] **UI-03**: Використовуються shadcn/ui компоненти: Button, Card, Badge, Checkbox, RadioGroup, Progress, Sonner (toast-сповіщення)
 
 ## v2 Requirements
 
@@ -81,12 +83,14 @@
 | OUT-02 | Phase 3 | Pending |
 | OUT-03 | Phase 3 | Pending |
 | OUT-04 | Phase 3 | Pending |
+| OUT-05 | Phase 3 | Pending |
 | UI-01 | Phase 3 | Pending |
 | UI-02 | Phase 3 | Pending |
+| UI-03 | Phase 2 | Pending |
 
 **Coverage:**
-- v1 requirements: 19 total
-- Mapped to phases: 19 ✓
+- v1 requirements: 22 total
+- Mapped to phases: 22 ✓
 - Unmapped: 0 ✓
 
 ---

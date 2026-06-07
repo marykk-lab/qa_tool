@@ -1,7 +1,6 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { ECOMMERCE_MODULES, INFOSITE_MODULES } from "@/constants/wizard-config";
 import type { ProjectType } from "@/lib/types";
@@ -35,6 +34,7 @@ export default function StepModules({ projectType, selected, onChange }: Props) 
         {modules.map((m) => (
           <div
             key={m.id}
+            onClick={() => handleCheck(m.id, !selected.includes(m.id))}
             className={cn(
               "flex items-center space-x-3 min-h-[44px] border rounded-md p-4 cursor-pointer transition-colors",
               selected.includes(m.id)
@@ -46,13 +46,9 @@ export default function StepModules({ projectType, selected, onChange }: Props) 
               id={m.id}
               checked={selected.includes(m.id)}
               onCheckedChange={(checked) => handleCheck(m.id, checked)}
+              onClick={(e) => e.stopPropagation()}
             />
-            <Label
-              htmlFor={m.id}
-              className="text-base text-foreground cursor-pointer"
-            >
-              {m.label}
-            </Label>
+            <span className="text-base text-foreground">{m.label}</span>
           </div>
         ))}
       </div>

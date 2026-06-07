@@ -45,8 +45,8 @@ decisions:
 metrics:
   duration: "~30 minutes"
   completed_date: "2026-06-04"
-  tasks_completed: 2
-  tasks_pending: 1
+  tasks_completed: 3
+  tasks_pending: 0
   files_created: 9
   files_modified: 3
 ---
@@ -76,9 +76,9 @@ metrics:
 - `src/components/TestCaseCard.tsx` — Client Component with `"use client"`, priority badge (red/yellow/green), `Показати деталі` toggle via `useState`
 - `src/app/page.tsx` — wired loader + `<TestCaseCard>` render
 
-### Task 3: Vercel Deploy — PENDING (human checkpoint)
+### Task 3: Vercel Deploy — DONE (human verified)
 
-Awaiting developer's Vercel authentication and deploy confirmation.
+Vercel production deployment confirmed working. Live URL serves the same rendered sample test-case page with six Ukrainian field labels, styled priority badge, and working "Показати деталі" toggle.
 
 ## Deviations from Plan
 
@@ -111,9 +111,13 @@ None. The home page renders a real test case from `data/test-cases/sample.json` 
 
 No new security-relevant surface beyond the plan's threat model. No `dangerouslySetInnerHTML` used. No secrets committed. `.gitignore` excludes `.env*` and `.vercel`.
 
-## Self-Check: PENDING
+## Self-Check: PASSED
 
-(Will be verified after Vercel checkpoint and final commit.)
+All 4 Phase 1 success criteria confirmed:
+1. `npm run dev` starts locally without errors — ✓
+2. Vercel deployment succeeded, live URL accessible — ✓ (human verified)
+3. `/data/test-cases/sample.json` exists with all 6 schema fields — ✓
+4. Tailwind configured and renders classes (priority badge styled) — ✓
 
 ## Next Steps
 
