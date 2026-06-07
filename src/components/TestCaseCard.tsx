@@ -16,6 +16,8 @@ function priorityBadgeClass(priority: TestCase["Пріоритет"]): string {
       return "bg-yellow-100 text-yellow-800 border border-yellow-200";
     case "Low":
       return "bg-green-100 text-green-800 border border-green-200";
+    default:
+      return "bg-gray-100 text-gray-800 border border-gray-200";
   }
 }
 
