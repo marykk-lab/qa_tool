@@ -41,6 +41,7 @@ export const INFOSITE_MODULES = [
 // ── Detail Step Trigger Lists ───────────────────────────────────
 
 export const ECOM_DETAIL_MODULES = ["checkout", "auth", "search"] as const;
+// auth is a detail trigger for ecommerce only; infosite auth has no sub-options in v1
 export const INFO_DETAIL_MODULES = ["contact-form", "multilang"] as const;
 
 // ── Step Logic Helpers ──────────────────────────────────────────
