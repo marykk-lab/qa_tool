@@ -69,7 +69,11 @@
   4. "Export to Notion (.csv)" downloads a UTF-8 CSV file with columns ID, Name, Preconditions, Steps, Expected, Priority, Module — importable into Notion as a database
   5. "Почати заново" resets all state and returns to step 1 of the wizard
   6. The UI applies the Feedboon dark theme: `#0a0a0a` background, `#171717` cards, `#3ecf8e` green accent, light text; renders correctly on desktop and tablet (≥768px)
-**Plans**: TBD
+**Plans**: 2 plans
+  **Wave 1:**
+  - [ ] 03-01-PLAN.md — Config + wiring: MODULE_TC_PREFIXES/DISPLAY_NAMES/PROMO constants, async page.tsx data load, Wizard initialCases prop, WizardNav isCompletion fix
+  **Wave 2** *(blocked on Wave 1 completion)*:
+  - [ ] 03-02-PLAN.md — Results components: PriorityBadge, ResultsView (generation logic, grouped table, action buttons, exports), Wizard step 5 wiring
 **UI hint**: yes
 
 ---
@@ -80,7 +84,7 @@
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
 | 2. Wizard | 3/3 | Complete | 2026-06-07 |
-| 3. Generation & Output | 0/? | Not started | - |
+| 3. Generation & Output | 0/2 | Planned | - |
 
 ---
 
@@ -105,6 +109,7 @@
 | OUT-02 | Phase 3 |
 | OUT-03 | Phase 3 |
 | OUT-04 | Phase 3 |
+| OUT-05 | Phase 3 |
 | UI-01 | Phase 3 |
 | UI-02 | Phase 3 |
 
