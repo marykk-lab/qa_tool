@@ -45,9 +45,9 @@ export default function WizardNav({
       {/* Progress section */}
       <div className="px-8 pt-6 pb-4">
         <p className="text-sm text-muted-foreground mb-2">
-          Крок {displayStep} з {totalSteps}
+          {isCompletion ? "Готово" : `Крок ${displayStep} з ${totalSteps}`}
         </p>
-        <Progress value={percent} className="h-1 rounded-full" />
+        <Progress value={isCompletion ? 100 : percent} className="h-1 rounded-full" />
       </div>
 
       {/* Navigation row — rendered BELOW step content via Wizard.tsx layout */}
