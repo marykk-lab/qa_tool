@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -70,13 +71,15 @@ function filterCasesForModule(
     }
   }
 
+  // auth: hasSocialLogin / hasOrderHistory collected but no TC-AUTH exclusion IDs defined in v1
+
   return cases;
 }
 
 function buildMarkdown(
   modules: string[],
   state: WizardState,
-  allCases: TestCase[]
+  casesByModule: Map<string, TestCase[]>
 ): string {
   const projectTypeLabel =
     state.projectType === "ecommerce" ? "E-commerce" : "Інформаційний сайт";
@@ -85,7 +88,7 @@ function buildMarkdown(
   let output = `# Результати тестування — ${projectTypeLabel} — ${todayISO}`;
 
   for (const moduleId of modules) {
-    const cases = filterCasesForModule(moduleId, state, allCases);
+    const cases = casesByModule.get(moduleId) ?? [];
     if (cases.length === 0) continue;
 
     output += `\n\n## ${MODULE_DISPLAY_NAMES[moduleId]} (${cases.length})\n`;
@@ -115,8 +118,7 @@ function buildMarkdown(
 
 function buildCsv(
   modules: string[],
-  state: WizardState,
-  allCases: TestCase[]
+  casesByModule: Map<string, TestCase[]>
 ): string {
   const BOM = "﻿";
   const headerRow =
@@ -130,7 +132,7 @@ function buildCsv(
   let dataRows = "";
 
   for (const moduleId of modules) {
-    const cases = filterCasesForModule(moduleId, state, allCases);
+    const cases = casesByModule.get(moduleId) ?? [];
     for (const tc of cases) {
       const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join("\n");
       const row = [
@@ -149,18 +151,16 @@ function buildCsv(
   return BOM + headerRow + dataRows;
 }
 
-function downloadFile(
-  content: string,
-  filename: string,
-  mimeType: string
-): void {
+function downloadFile(content: string, filename: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -168,6 +168,10 @@ function downloadFile(
 export default function ResultsView({ state, allCases, onRestart }: Props) {
   const filteredModules = state.modules.filter(
     (m) => filterCasesForModule(m, state, allCases).length > 0
+  );
+  const casesByModule = useMemo(
+    () => new Map(filteredModules.map((m) => [m, filterCasesForModule(m, state, allCases)])),
+    [filteredModules, state, allCases]
   );
   const isEmpty = filteredModules.length === 0;
 
@@ -198,7 +202,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
 
       {/* Module blocks */}
       {filteredModules.map((moduleId) => {
-        const cases = filterCasesForModule(moduleId, state, allCases);
+        const cases = casesByModule.get(moduleId) ?? [];
         return (
           <div key={moduleId} className="mb-6 last:mb-0">
             <h3 className="text-xl font-semibold text-foreground mb-4">
@@ -293,7 +297,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
         <Button
           className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-sm font-semibold rounded-md"
           onClick={async () => {
-            const md = buildMarkdown(state.modules, state, allCases);
+            const md = buildMarkdown(filteredModules, state, casesByModule);
             try {
               await navigator.clipboard.writeText(md);
               toast.success("Markdown скопійовано в буфер обміну");
@@ -312,7 +316,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
           variant="outline"
           className="border-primary text-primary hover:bg-primary/10 h-10 px-6 text-sm font-semibold rounded-md"
           onClick={() => {
-            const md = buildMarkdown(state.modules, state, allCases);
+            const md = buildMarkdown(filteredModules, state, casesByModule);
             const filename = `test-cases_${state.projectType}_${new Date()
               .toISOString()
               .slice(0, 10)}.md`;
@@ -327,7 +331,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
           variant="outline"
           className="border-border text-foreground hover:bg-secondary h-10 px-6 text-sm font-semibold rounded-md"
           onClick={() => {
-            const csv = buildCsv(state.modules, state, allCases);
+            const csv = buildCsv(filteredModules, casesByModule);
             const filename = `test-cases_${state.projectType}_${new Date()
               .toISOString()
               .slice(0, 10)}.csv`;
