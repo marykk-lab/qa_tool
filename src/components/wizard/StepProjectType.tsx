@@ -1,7 +1,6 @@
 "use client";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { ProjectType } from "@/lib/types";
 
@@ -28,6 +27,7 @@ export default function StepProjectType({ value, onChange }: Props) {
         {OPTIONS.map((opt) => (
           <div
             key={opt.value}
+            onClick={() => onChange(opt.value)}
             className={cn(
               "flex items-center space-x-3 min-h-[44px] border rounded-md p-4 cursor-pointer transition-colors",
               value === opt.value
@@ -35,13 +35,12 @@ export default function StepProjectType({ value, onChange }: Props) {
                 : "border-border bg-card hover:border-primary/50"
             )}
           >
-            <RadioGroupItem value={opt.value} id={opt.value} />
-            <Label
-              htmlFor={opt.value}
-              className="text-base text-foreground cursor-pointer"
-            >
-              {opt.label}
-            </Label>
+            <RadioGroupItem
+              value={opt.value}
+              id={opt.value}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <span className="text-base text-foreground">{opt.label}</span>
           </div>
         ))}
       </RadioGroup>

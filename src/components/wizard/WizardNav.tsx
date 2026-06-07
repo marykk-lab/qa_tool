@@ -60,11 +60,7 @@ export default function WizardNav({
         >
           Назад
         </Button>
-        {isCompletion ? (
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-            Готово — перейти до результатів
-          </Button>
-        ) : (
+        {!isCompletion && (
           <Button
             onClick={onNext}
             disabled={!canAdvance(currentStep, state)}

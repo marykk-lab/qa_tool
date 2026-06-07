@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 1: Foundation** - Next.js + Tailwind scaffold, project structure, JSON library skeleton, Vercel deployment config
-- [ ] **Phase 2: Wizard** - Full multi-step question flow for both project types with navigation, progress indicator, and test case JSON library
+- [x] **Phase 2: Wizard** - Full multi-step question flow for both project types with navigation, progress indicator, and test case JSON library
 - [ ] **Phase 3: Generation & Output** - Deterministic case generation, result table, Markdown export actions, Feedboon styling, tablet layout
 
 ---
@@ -49,7 +49,7 @@
   - [x] 02-01-PLAN.md — Foundation: shadcn/ui install, Feedboon dark theme, WizardState types + config, array-aware loader, RED tests
   **Wave 2** *(blocked on Wave 1 completion)*:
   - [x] 02-02-PLAN.md — Test-case JSON library: 10 module files with correct ID prefixes + schema/prefix loader test
-  - [ ] 02-03-PLAN.md — Wizard vertical slice: 5 step components, navigation/progress, Sonner toasts, page wiring
+  - [x] 02-03-PLAN.md — Wizard vertical slice: 5 step components, navigation/progress, Sonner toasts, page wiring
 
   **Cross-cutting constraints:**
   - `hasDetailStep(state)` must be called in `handleNext()` — step 4 skip is mandatory (WIZ-04, WIZ-07)
@@ -69,7 +69,11 @@
   4. "Export to Notion (.csv)" downloads a UTF-8 CSV file with columns ID, Name, Preconditions, Steps, Expected, Priority, Module — importable into Notion as a database
   5. "Почати заново" resets all state and returns to step 1 of the wizard
   6. The UI applies the Feedboon dark theme: `#0a0a0a` background, `#171717` cards, `#3ecf8e` green accent, light text; renders correctly on desktop and tablet (≥768px)
-**Plans**: TBD
+**Plans**: 2 plans
+  **Wave 1:**
+  - [ ] 03-01-PLAN.md — Config + wiring: MODULE_TC_PREFIXES/DISPLAY_NAMES/PROMO constants, async page.tsx data load, Wizard initialCases prop, WizardNav isCompletion fix
+  **Wave 2** *(blocked on Wave 1 completion)*:
+  - [ ] 03-02-PLAN.md — Results components: PriorityBadge, ResultsView (generation logic, grouped table, action buttons, exports), Wizard step 5 wiring
 **UI hint**: yes
 
 ---
@@ -79,8 +83,8 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
-| 2. Wizard | 2/3 | Executing | - |
-| 3. Generation & Output | 0/? | Not started | - |
+| 2. Wizard | 3/3 | Complete | 2026-06-07 |
+| 3. Generation & Output | 0/2 | Planned | - |
 
 ---
 
@@ -105,6 +109,7 @@
 | OUT-02 | Phase 3 |
 | OUT-03 | Phase 3 |
 | OUT-04 | Phase 3 |
+| OUT-05 | Phase 3 |
 | UI-01 | Phase 3 |
 | UI-02 | Phase 3 |
 

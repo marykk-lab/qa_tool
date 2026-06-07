@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2 — Wizard
-current_plan: Phase 2 Plan 02 complete — executing Plan 03
+current_phase: 3 — Generation & Output
+current_plan: 03-01-PLAN.md (Wave 1)
 status: ready_to_execute
-last_updated: "2026-06-04T23:00:00.000Z"
+last_updated: "2026-06-07T18:55:54.584Z"
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 2
-  percent: 50
+  completed_plans: 4
+  percent: 67
 ---
 
 # Project State: QA Test Constructor
@@ -30,13 +30,13 @@ progress:
 
 ## Current Position
 
-**Current Phase:** 2 — Wizard
-**Current Plan:** Plan 03 (Wizard vertical slice) — Plans 01 and 02 complete
-**Phase Status:** Executing ✓
-**Overall Status:** Phase 2 executing — 2/3 plans complete
+**Current Phase:** 3 — Generation & Output
+**Current Plan:** 03-01-PLAN.md (Wave 1 — Config & Wiring)
+**Phase Status:** Planned — 2 plans in 2 waves
+**Overall Status:** Phase 2 complete — 2/3 phases done, Phase 3 ready to execute
 
 ```
-Progress: [█████░░░░░] 50% (1/3 phases complete, Phase 2 in progress — 2/3 plans done)
+Progress: [███████░░░] 67% (2/3 phases complete, Phase 3 not started)
 ```
 
 ---
@@ -46,17 +46,17 @@ Progress: [█████░░░░░] 50% (1/3 phases complete, Phase 2 in 
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | Foundation | Complete ✓ |
-| 2 | Wizard | Planned ✓ |
-| 3 | Generation & Output | Not started |
+| 2 | Wizard | Complete ✓ |
+| 3 | Generation & Output | Planned (2 plans) |
 
 ---
 
 ## Performance Metrics
 
-- Plans executed: 3
-- Phases complete: 1/3
+- Plans executed: 4 (3 phases × plans)
+- Phases complete: 2/3
 - Requirements mapped: 19/19
-- Requirements delivered: 7/19 (WIZ-08, WIZ-09, UI-03, GEN-01 — Plan 01; GEN-01, GEN-03, GEN-04 — Plan 02)
+- Requirements delivered: 19/19 (Phase 2 complete — WIZ-01…09, GEN-01, GEN-03, GEN-04, UI-03 all done)
 
 ---
 
@@ -91,9 +91,7 @@ Progress: [█████░░░░░] 50% (1/3 phases complete, Phase 2 in 
 
 ### Active Todos
 
-- Decide: add Platform step to Phase 2 wizard? (from task spec, not in current REQUIREMENTS)
-- Decide: add CSV/Notion export to Phase 3? (from task spec, not in current OUT requirements)
-- Update REQUIREMENTS.md before Phase 2 planning if above decisions are yes
+- Decide: add CSV/Notion export to Phase 3? (from task spec — OUT requirements include it now per ROADMAP)
 
 ### Blockers
 
@@ -109,13 +107,14 @@ Progress: [█████░░░░░] 50% (1/3 phases complete, Phase 2 in 
 
 ## Session Continuity
 
-**To resume:** Run `/gsd:execute-phase 2` to execute Plan 03 (wizard vertical slice).
+**To resume:** Run `/gsd:discuss-phase 3` or `/gsd:plan-phase 3` to plan Phase 3 (Generation & Output).
 
 **Context for next session:**
 
-- Phase 2 Plan 01 complete: shadcn/ui installed (8 components), Feedboon dark theme applied, WizardState types + wizard-config helpers + array-aware loader established
-- Phase 2 Plan 02 complete: 10 module JSON files in data/test-cases/ (45 total test cases), sample.json removed, extended loader test suite (46/46 passing)
-- Phase 2 Plan 03 = wizard vertical slice (5 step components, navigation, page wiring)
-- shadcn components are base-nova preset but functionally identical to new-york
-- WizardState contract: src/lib/types.ts; platform/module config: src/constants/wizard-config.ts
+- Phase 2 fully complete (all 3 plans done, human-verified)
+- Wizard: src/components/wizard/Wizard.tsx owns all state; five step components under src/components/wizard/
+- WizardState contract: src/lib/types.ts; config helpers: src/constants/wizard-config.ts
+- JSON library: data/test-cases/ (10 files, 45 test cases); loader: src/lib/test-cases.ts
+- Phase 3 entry point: wire the "Готово — перейти до результатів" button in Wizard.tsx to navigate to a results page
+- Full-row click pattern established: onClick on row div + stopPropagation on inner Radix control
 - Test case IDs: TC-CAT (5), TC-PDP (5), TC-CART (4), TC-CHK (6), TC-AUTH (5), TC-SRCH (4), TC-BLOG (4), TC-FORM (4), TC-LANG (4), TC-CPN (4) — 45 total
