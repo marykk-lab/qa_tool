@@ -8,10 +8,11 @@ const PRIORITY_STYLES: Record<string, string> = {
 };
 
 export function PriorityBadge({ priority }: { priority: "High" | "Medium" | "Low" }) {
+  const style = PRIORITY_STYLES[priority] ?? "bg-zinc-800/60 text-zinc-400 border-zinc-700";
   return (
     <Badge
       variant="outline"
-      className={cn("text-sm font-normal", PRIORITY_STYLES[priority])}
+      className={cn("text-sm font-normal", style)}
       aria-label={`${priority} пріоритет`}
     >
       {priority}
