@@ -12,7 +12,7 @@
 
 - [x] **Phase 1: Foundation** - Next.js + Tailwind scaffold, project structure, JSON library skeleton, Vercel deployment config
 - [x] **Phase 2: Wizard** - Full multi-step question flow for both project types with navigation, progress indicator, and test case JSON library
-- [ ] **Phase 3: Generation & Output** - Deterministic case generation, result table, Markdown export actions, Feedboon styling, tablet layout
+- [x] **Phase 3: Generation & Output** - Deterministic case generation, result table, Markdown export actions, Feedboon styling, tablet layout
 
 ---
 
@@ -71,9 +71,9 @@
   6. The UI applies the Feedboon dark theme: `#0a0a0a` background, `#171717` cards, `#3ecf8e` green accent, light text; renders correctly on desktop and tablet (≥768px)
 **Plans**: 2 plans
   **Wave 1:**
-  - [ ] 03-01-PLAN.md — Config + wiring: MODULE_TC_PREFIXES/DISPLAY_NAMES/PROMO constants, async page.tsx data load, Wizard initialCases prop, WizardNav isCompletion fix
+  - [x] 03-01-PLAN.md — Config + wiring: MODULE_TC_PREFIXES/DISPLAY_NAMES/PROMO constants, async page.tsx data load, Wizard initialCases prop, WizardNav isCompletion fix
   **Wave 2** *(blocked on Wave 1 completion)*:
-  - [ ] 03-02-PLAN.md — Results components: PriorityBadge, ResultsView (generation logic, grouped table, action buttons, exports), Wizard step 5 wiring
+  - [x] 03-02-PLAN.md — Results components: PriorityBadge, ResultsView (generation logic, grouped table, action buttons, exports), Wizard step 5 wiring
 **UI hint**: yes
 
 ---
@@ -84,7 +84,7 @@
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
 | 2. Wizard | 3/3 | Complete | 2026-06-07 |
-| 3. Generation & Output | 0/2 | Planned | - |
+| 3. Generation & Output | 2/2 | Complete | 2026-06-07 |
 
 ---
 
