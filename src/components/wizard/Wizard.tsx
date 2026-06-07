@@ -10,6 +10,7 @@ import StepPlatform from "./StepPlatform";
 import StepModules from "./StepModules";
 import StepDetails from "./StepDetails";
 import WizardNav from "./WizardNav";
+import ResultsView from "./ResultsView";
 
 type WizardProps = {
   initialCases: TestCase[];
@@ -95,14 +96,14 @@ export default function Wizard({ initialCases }: WizardProps) {
           <StepDetails state={state} onChange={updateState} />
         )}
         {currentStep === 5 && (
-          <div className="px-8 py-6 text-center">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Готово!
-            </h2>
-            <p className="text-base text-muted-foreground">
-              Параметри зібрано. Натисніть кнопку нижче, щоб отримати тест кейси.
-            </p>
-          </div>
+          <ResultsView
+            state={state}
+            allCases={initialCases}
+            onRestart={() => {
+              setState(INITIAL_WIZARD_STATE);
+              setCurrentStep(1);
+            }}
+          />
         )}
       </CardContent>
     </Card>
