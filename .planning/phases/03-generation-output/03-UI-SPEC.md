@@ -35,12 +35,13 @@ No new shadcn components are required for Phase 3. All components (Button, Card,
 
 ## Spacing Scale
 
-Inherited from Phase 2 without changes. All values are multiples of 4.
+Inherited from Phase 2. One Phase 3 addition: `table-cell` (12px) for table row vertical padding.
 
 | Token | Value | Tailwind v4 class | Usage |
 |-------|-------|-------------------|-------|
 | xs | 4px | `gap-1` / `p-1` | Badge inner padding |
 | sm | 8px | `gap-2` / `p-2` | Gap between badge and text; inline spacing |
+| table-cell | 12px | `py-3` | Table cell vertical padding (`<th>` and `<td>` rows) |
 | md | 16px | `gap-4` / `p-4` | Gap between action buttons; table cell padding (horizontal) |
 | lg | 24px | `gap-6` / `p-6` | Module block vertical gap; results container padding (top/bottom) |
 | xl | 32px | `gap-8` / `p-8` | Results container padding (horizontal, desktop) |
@@ -124,7 +125,7 @@ The results screen replaces the `{currentStep === 5}` placeholder div in `Wizard
       {/* Module blocks — one per selected module */}
       {modules.map(module => (
         <div class="mb-6 last:mb-0">              ← lg gap between module blocks
-          <h3 class="text-xl font-semibold text-foreground mb-3">
+          <h3 class="text-xl font-semibold text-foreground mb-4">
             {moduleName} ({count})
           </h3>
           <TestCaseTable cases={moduleCases} />
@@ -160,7 +161,7 @@ Each selected module renders as a visually separated block. Order follows user s
 ### Group Heading
 
 ```
-<h3 class="text-xl font-semibold text-foreground mb-3">
+<h3 class="text-xl font-semibold text-foreground mb-4">
   {displayModuleName} ({caseCount})
 </h3>
 ```
@@ -276,7 +277,7 @@ export function PriorityBadge({ priority }: { priority: "High" | "Medium" | "Low
   return (
     <Badge
       variant="outline"
-      className={cn("text-xs font-normal", PRIORITY_STYLES[priority])}
+      className={cn("text-sm font-normal", PRIORITY_STYLES[priority])}
     >
       {priority}
     </Badge>
@@ -390,7 +391,7 @@ All copy is Ukrainian only (CLAUDE.md and REQUIREMENTS.md — locked constraint)
 | Trigger | Copy |
 |---------|------|
 | Clipboard copy success | `Markdown скопійовано в буфер обміну` |
-| Clipboard copy failure (API not available) | `Не вдалося скопіювати. Спробуйте ще раз.` |
+| Clipboard copy failure (API not available) | `Не вдалося скопіювати. Спробуйте ще раз або виберіть текст вручну.` |
 
 ### Empty State (Edge Case)
 
