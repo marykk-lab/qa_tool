@@ -55,3 +55,55 @@ export function hasDetailStep(state: WizardState): boolean {
 export function getTotalSteps(state: WizardState): number {
   return hasDetailStep(state) ? 4 : 3;
 }
+
+// ── Generation Constants ────────────────────────────────────────
+
+/**
+ * Maps each module ID to the list of TC-prefix strings used in
+ * data/test-cases/*.json for that module.
+ * Modules without a dedicated JSON file map to an empty array.
+ * checkout maps to TC-CHK only; TC-CPN is handled separately via PROMO_TC_PREFIX.
+ */
+export const MODULE_TC_PREFIXES: Record<string, string[]> = {
+  catalog:        ["TC-CAT"],
+  product:        ["TC-PDP"],
+  cart:           ["TC-CART"],
+  checkout:       ["TC-CHK"],
+  auth:           ["TC-AUTH"],
+  blog:           ["TC-BLOG"],
+  search:         ["TC-SRCH"],
+  filter:         [],
+  compare:        [],
+  wishlist:       [],
+  "contact-form": ["TC-FORM"],
+  subscription:   [],
+  gallery:        [],
+  multilang:      ["TC-LANG"],
+} as const;
+
+/**
+ * TC prefix for promo-code test cases.
+ * Added to checkout module results when state.checkoutDetails.hasPromoCode === true.
+ */
+export const PROMO_TC_PREFIX = "TC-CPN" as const;
+
+/**
+ * Maps each module ID to its Ukrainian display name.
+ * Values are the same label strings used in ECOMMERCE_MODULES / INFOSITE_MODULES.
+ */
+export const MODULE_DISPLAY_NAMES: Record<string, string> = {
+  catalog:        "Каталог товарів",
+  product:        "Сторінка товару",
+  cart:           "Кошик",
+  checkout:       "Checkout",
+  auth:           "Особистий кабінет",
+  blog:           "Блог",
+  search:         "Пошук",
+  filter:         "Фільтрація",
+  compare:        "Порівняння товарів",
+  wishlist:       "Список бажань",
+  "contact-form": "Контактна форма",
+  subscription:   "Підписка на розсилку",
+  gallery:        "Галерея",
+  multilang:      "Багатомовність",
+} as const;
