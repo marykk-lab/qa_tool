@@ -53,10 +53,10 @@ export default function WizardNav({
       {/* Navigation row — rendered BELOW step content via Wizard.tsx layout */}
       <div className="px-8 pb-6 pt-0 flex justify-between gap-4">
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={onBack}
           disabled={currentStep === 1}
-          className="border-border bg-transparent text-foreground hover:bg-secondary hover:text-foreground"
+          className="border border-white/25 text-foreground hover:bg-secondary hover:text-foreground"
         >
           Назад
         </Button>

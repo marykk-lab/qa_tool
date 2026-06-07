@@ -14,6 +14,9 @@ export type TestCase = {
   /** Short human-readable name of the test case */
   Назва: string;
 
+  /** Test suite name — matches the module display name */
+  Suite: string;
+
   /** Pre-conditions that must be true before the test begins */
   Передумови: string;
 
@@ -23,8 +26,29 @@ export type TestCase = {
   /** Expected system behaviour after all steps are executed */
   "Очікуваний результат": string;
 
-  /** Test priority level */
-  Пріоритет: "High" | "Medium" | "Low";
+  /**
+   * Test execution type.
+   * E2E — manual browser walkthrough (default for most QA cases).
+   * Manual — requires native device action (camera, biometrics, push, bank app).
+   * Unit/Component/Integration — automated, filled by Lead/dev.
+   */
+  Type: "E2E" | "Manual" | "Unit" | "Component" | "Integration";
+
+  /**
+   * CI layer — when to run in the pipeline.
+   * Smoke: 1–3 per suite, <30 s, on every deploy.
+   * Regression: edge cases, before release.
+   * Feature: new flow, not yet stabilised.
+   */
+  Layer: "Smoke" | "Regression" | "Feature";
+
+  /**
+   * Business criticality.
+   * P0 — blocks business/operations (auth, payments, checkout).
+   * P1 — main workflows (lists, filters, lifecycle).
+   * P2 — secondary (UX polish, rare scenarios).
+   */
+  Пріоритет: "P0" | "P1" | "P2";
 };
 
 // ── Wizard Types ──────────────────────────────────────────────────

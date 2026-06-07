@@ -93,9 +93,9 @@ function buildMarkdown(
 
     output += `\n\n## ${MODULE_DISPLAY_NAMES[moduleId]} (${cases.length})\n`;
     output +=
-      "| ID | Назва | Передумови | Кроки | Очікуваний результат | Пріоритет |\n";
+      "| ID | Назва | Передумови | Кроки | Очікуваний результат | Type | Layer | Пріоритет |\n";
     output +=
-      "|----|-------|------------|-------|----------------------|-----------|\n";
+      "|----|-------|------------|-------|----------------------|------|-------|-----------|\n";
 
     for (const tc of cases) {
       const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join("<br>");
@@ -105,6 +105,8 @@ function buildMarkdown(
         tc.Передумови,
         steps,
         tc["Очікуваний результат"],
+        tc.Type,
+        tc.Layer,
         tc.Пріоритет,
       ]
         .map((cell) => cell.replace(/\|/g, "\\|"))
@@ -122,7 +124,7 @@ function buildCsv(
 ): string {
   const BOM = "﻿";
   const headerRow =
-    "ID,Name,Preconditions,Steps,Expected,Priority,Module\n";
+    "ID,Name,Suite,Preconditions,Steps,Expected,Type,Layer,Priority\n";
 
   function escapeCell(value: string): string {
     const escaped = value.replace(/"/g, '""');
@@ -138,11 +140,13 @@ function buildCsv(
       const row = [
         escapeCell(tc.ID),
         escapeCell(tc.Назва),
+        escapeCell(tc.Suite),
         escapeCell(tc.Передумови),
         escapeCell(steps),
         escapeCell(tc["Очікуваний результат"]),
+        escapeCell(tc.Type),
+        escapeCell(tc.Layer),
         escapeCell(tc.Пріоритет),
-        escapeCell(MODULE_DISPLAY_NAMES[moduleId] ?? moduleId),
       ].join(",");
       dataRows += row + "\n";
     }
@@ -248,7 +252,19 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                     </th>
                     <th
                       scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[110px]"
+                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[80px]"
+                    >
+                      Type
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[100px]"
+                    >
+                      Layer
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[90px]"
                     >
                       Пріоритет
                     </th>
@@ -270,7 +286,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                         {tc.Передумови}
                       </td>
                       <td className="px-4 py-3 text-sm font-normal align-top">
-                        <ol className="list-decimal list-inside space-y-1 text-foreground">
+                        <ol className="space-y-1 text-foreground list-none">
                           {tc.Кроки.map((step, i) => (
                             <li key={i}>{step}</li>
                           ))}
@@ -278,6 +294,12 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                       </td>
                       <td className="px-4 py-3 text-sm font-normal align-top text-foreground">
                         {tc["Очікуваний результат"]}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">
+                        {tc.Type}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">
+                        {tc.Layer}
                       </td>
                       <td className="px-4 py-3 align-top">
                         <PriorityBadge priority={tc.Пріоритет} />
@@ -292,7 +314,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
       })}
 
       {/* Action buttons */}
-      <div className="mt-12 flex flex-wrap gap-4">
+      <div className="mt-12 flex flex-wrap gap-4 justify-center">
         {/* Copy Markdown — primary */}
         <Button
           className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-sm font-semibold rounded-md"
@@ -313,8 +335,8 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
 
         {/* Download .md — outline accent */}
         <Button
-          variant="outline"
-          className="border-primary text-primary hover:bg-primary/10 h-10 px-6 text-sm font-semibold rounded-md"
+          variant="ghost"
+          className="border border-primary text-primary hover:bg-primary/10 h-10 px-6 text-sm font-semibold rounded-md"
           onClick={() => {
             const md = buildMarkdown(filteredModules, state, casesByModule);
             const filename = `test-cases_${state.projectType}_${new Date()
@@ -328,8 +350,8 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
 
         {/* Export Notion CSV — neutral outline */}
         <Button
-          variant="outline"
-          className="border-border text-foreground hover:bg-secondary h-10 px-6 text-sm font-semibold rounded-md"
+          variant="ghost"
+          className="border border-white/25 text-foreground hover:bg-secondary h-10 px-6 text-sm font-semibold rounded-md"
           onClick={() => {
             const csv = buildCsv(filteredModules, casesByModule);
             const filename = `test-cases_${state.projectType}_${new Date()
@@ -344,7 +366,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
         {/* Restart — ghost */}
         <Button
           variant="ghost"
-          className="text-muted-foreground hover:text-foreground hover:bg-secondary/50 h-10 px-6 text-sm font-semibold rounded-md"
+          className="border border-white/15 text-muted-foreground hover:text-foreground hover:bg-secondary/50 h-10 px-6 text-sm font-semibold rounded-md"
           onClick={onRestart}
         >
           Почати заново
