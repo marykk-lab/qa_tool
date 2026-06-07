@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { INITIAL_WIZARD_STATE, type WizardState } from "@/lib/types";
+import { INITIAL_WIZARD_STATE, type WizardState, type TestCase } from "@/lib/types";
 import { getTotalSteps, hasDetailStep } from "@/constants/wizard-config";
 import { Card, CardContent } from "@/components/ui/card";
 import StepProjectType from "./StepProjectType";
@@ -11,7 +11,11 @@ import StepModules from "./StepModules";
 import StepDetails from "./StepDetails";
 import WizardNav from "./WizardNav";
 
-export default function Wizard() {
+type WizardProps = {
+  initialCases: TestCase[];
+};
+
+export default function Wizard({ initialCases }: WizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [state, setState] = useState<WizardState>(INITIAL_WIZARD_STATE);
 
