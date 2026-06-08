@@ -20,6 +20,7 @@ type Props = {
 function filterCasesForModule(
   moduleId: string,
   state: WizardState,
+  moduleFeatures: Record<string, string[]>,
   allCases: TestCase[]
 ): TestCase[] {
   const prefixes = [...(MODULE_TC_PREFIXES[moduleId] ?? [])];
@@ -72,6 +73,14 @@ function filterCasesForModule(
   }
 
   // auth: hasSocialLogin / hasOrderHistory collected but no TC-AUTH exclusion IDs defined in v1
+
+  // Feature filtering (Phase 4, per D-12)
+  const selectedFeatures = moduleFeatures[moduleId] ?? [];
+  if (selectedFeatures.length > 0) {
+    cases = cases.filter(
+      (tc) => !tc.Feature || selectedFeatures.includes(tc.Feature)
+    );
+  }
 
   return cases;
 }
@@ -171,10 +180,10 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 
 export default function ResultsView({ state, allCases, onRestart }: Props) {
   const filteredModules = state.modules.filter(
-    (m) => filterCasesForModule(m, state, allCases).length > 0
+    (m) => filterCasesForModule(m, state, state.moduleFeatures, allCases).length > 0
   );
   const casesByModule = useMemo(
-    () => new Map(filteredModules.map((m) => [m, filterCasesForModule(m, state, allCases)])),
+    () => new Map(filteredModules.map((m) => [m, filterCasesForModule(m, state, state.moduleFeatures, allCases)])),
     [filteredModules, state, allCases]
   );
   const isEmpty = filteredModules.length === 0;

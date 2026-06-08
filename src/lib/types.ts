@@ -49,6 +49,13 @@ export type TestCase = {
    * P2 — secondary (UX polish, rare scenarios).
    */
   Пріоритет: "P0" | "P1" | "P2";
+
+  /**
+   * Feature tag for feature-based filtering (Phase 4).
+   * Must match one of the MODULE_FEATURES strings for the test case's module.
+   * Optional — entries without Feature always pass through the feature filter.
+   */
+  Feature?: string;
 };
 
 // ── Wizard Types ──────────────────────────────────────────────────
@@ -87,6 +94,8 @@ export type WizardState = {
   searchDetails: SearchDetails | null;
   contactFormDetails: ContactFormDetails | null;
   multilangDetails: MultilangDetails | null;
+  /** Per-module selected feature strings for feature-based filtering (Phase 4). */
+  moduleFeatures: Record<string, string[]>;
 };
 
 export const INITIAL_WIZARD_STATE: WizardState = {
@@ -98,4 +107,5 @@ export const INITIAL_WIZARD_STATE: WizardState = {
   searchDetails: null,
   contactFormDetails: null,
   multilangDetails: null,
+  moduleFeatures: {},
 };
