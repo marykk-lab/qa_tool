@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function StepModuleFeatures({
-  moduleId: _moduleId,
+  moduleId,
   moduleName,
   features,
   selected,
@@ -41,12 +41,12 @@ export default function StepModuleFeatures({
             className="flex items-center space-x-3 min-h-[44px] border border-border rounded-md p-4 bg-card cursor-pointer"
           >
             <Checkbox
-              id={feature}
+              id={`${moduleId}-${feature}`}
               checked={selected.includes(feature)}
               onCheckedChange={() => toggle(feature)}
               onClick={(e) => e.stopPropagation()}
             />
-            <span className="text-base text-foreground">{feature}</span>
+            <label htmlFor={`${moduleId}-${feature}`} className="text-base text-foreground cursor-pointer">{feature}</label>
           </div>
         ))}
       </div>

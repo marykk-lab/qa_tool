@@ -36,6 +36,7 @@ export default function Wizard({ initialCases }: WizardProps) {
       toast.error("Оберіть принаймні один модуль для тестування");
       return;
     }
+    // steps >= 4 are module sub-steps: features are optional, always advance
     setCurrentStep((prev) => prev + 1);
   }
 

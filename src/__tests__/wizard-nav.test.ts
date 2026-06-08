@@ -13,13 +13,11 @@ import type { WizardState } from "../lib/types";
 
 // Inline the canAdvance logic here (mirrors WizardNav.tsx internal function)
 function canAdvance(step: number, state: WizardState): boolean {
-  switch (step) {
-    case 1: return state.projectType !== null;
-    case 2: return state.platform !== null;
-    case 3: return state.modules.length > 0;
-    case 4: return true;
-    default: return false;
-  }
+  if (step === 1) return state.projectType !== null;
+  if (step === 2) return state.platform !== null;
+  if (step === 3) return state.modules.length > 0;
+  if (step >= 4) return true; // sub-steps: features are optional
+  return false;
 }
 
 describe("canAdvance navigation guard", () => {
@@ -59,7 +57,7 @@ describe("canAdvance navigation guard", () => {
     expect(canAdvance(4, { ...INITIAL_WIZARD_STATE, projectType: null, platform: null })).toBe(true);
   });
 
-  it("unknown step: returns false", () => {
-    expect(canAdvance(99, INITIAL_WIZARD_STATE)).toBe(false);
+  it("step 5: returns true (all sub-steps >= 4 always advance)", () => {
+    expect(canAdvance(5, INITIAL_WIZARD_STATE)).toBe(true);
   });
 });

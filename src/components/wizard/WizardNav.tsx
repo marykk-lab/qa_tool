@@ -31,7 +31,7 @@ export default function WizardNav({
   isCompletion,
 }: Props) {
   const displayStep = Math.min(currentStep, totalSteps); // cap at totalSteps for completion
-  const percent = Math.round((displayStep / totalSteps) * 100);
+  const percent = isCompletion ? 100 : Math.min(99, Math.round((displayStep / totalSteps) * 100));
 
   return (
     <>
@@ -40,7 +40,7 @@ export default function WizardNav({
         <p className="text-sm text-muted-foreground mb-2">
           {isCompletion ? "Готово" : `Крок ${displayStep} з ${totalSteps}`}
         </p>
-        <Progress value={isCompletion ? 100 : percent} className="h-1 rounded-full" />
+        <Progress value={percent} className="h-1 rounded-full" />
       </div>
 
       {/* Navigation row — rendered BELOW step content via Wizard.tsx layout */}

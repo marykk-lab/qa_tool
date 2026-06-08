@@ -72,7 +72,8 @@ function filterCasesForModule(
     }
   }
 
-  // auth: hasSocialLogin / hasOrderHistory collected but no TC-AUTH exclusion IDs defined in v1
+  // auth: hasSocialLogin / hasOrderHistory have no effect — no TC-AUTH cases carry those exclusion IDs yet;
+  // use feature filtering via StepModuleFeatures to suppress unwanted auth cases instead
 
   // Feature filtering (Phase 4, per D-12)
   const selectedFeatures = moduleFeatures[moduleId] ?? [];
@@ -201,29 +202,31 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ResultsView({ state, allCases, onRestart }: Props) {
-  const filteredModules = state.modules.filter(
-    (m) => filterCasesForModule(m, state, state.moduleFeatures, allCases).length > 0
-  );
-  const casesByModule = useMemo(
-    () => new Map(filteredModules.map((m) => [m, filterCasesForModule(m, state, state.moduleFeatures, allCases)])),
-    [filteredModules, state, allCases]
-  );
-  const isEmpty = filteredModules.length === 0;
+  const { filteredModules, casesByModule, suiteMap, suiteNames, isEmpty } = useMemo(() => {
+    const filtered = state.modules.filter(
+      (m) => filterCasesForModule(m, state, state.moduleFeatures, allCases).length > 0
+    );
+    const byModule = new Map(
+      filtered.map((m) => [m, filterCasesForModule(m, state, state.moduleFeatures, allCases)])
+    );
+    const suites = new Map<string, TestCase[]>();
+    for (const moduleId of filtered) {
+      for (const tc of byModule.get(moduleId) ?? []) {
+        if (!suites.has(tc.Suite)) suites.set(tc.Suite, []);
+        suites.get(tc.Suite)!.push(tc);
+      }
+    }
+    return {
+      filteredModules: filtered,
+      casesByModule: byModule,
+      suiteMap: suites,
+      suiteNames: Array.from(suites.keys()),
+      isEmpty: filtered.length === 0,
+    };
+  }, [state, allCases]);
 
   // State for collapsed suites — empty Set means all expanded
   const [collapsedSuites, setCollapsedSuites] = useState<Set<string>>(new Set());
-
-  // Group filtered cases by Suite for rendering
-  const suiteMap = new Map<string, TestCase[]>();
-  for (const moduleId of filteredModules) {
-    const cases = casesByModule.get(moduleId) ?? [];
-    for (const tc of cases) {
-      const suite = tc.Suite;
-      if (!suiteMap.has(suite)) suiteMap.set(suite, []);
-      suiteMap.get(suite)!.push(tc);
-    }
-  }
-  const suiteNames = Array.from(suiteMap.keys());
 
   // Empty state
   if (isEmpty) {

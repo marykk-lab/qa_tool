@@ -52,15 +52,19 @@ describe("hasDetailStep", () => {
 });
 
 describe("getTotalSteps", () => {
-  it("returns 3 when no detail-triggering modules selected", () => {
-    expect(getTotalSteps({ ...INITIAL_WIZARD_STATE, projectType: "ecommerce", modules: ["catalog"] })).toBe(3);
-  });
-
-  it("returns 4 when a detail-triggering module is selected", () => {
-    expect(getTotalSteps({ ...INITIAL_WIZARD_STATE, projectType: "ecommerce", modules: ["checkout"] })).toBe(4);
-  });
-
-  it("returns 3 when projectType is null (no detail step)", () => {
+  it("returns 3 when no modules selected", () => {
     expect(getTotalSteps(INITIAL_WIZARD_STATE)).toBe(3);
+  });
+
+  it("returns 4 when one module selected", () => {
+    expect(getTotalSteps({ ...INITIAL_WIZARD_STATE, projectType: "ecommerce", modules: ["catalog"] })).toBe(4);
+  });
+
+  it("returns 5 when two modules selected", () => {
+    expect(getTotalSteps({ ...INITIAL_WIZARD_STATE, projectType: "ecommerce", modules: ["catalog", "checkout"] })).toBe(5);
+  });
+
+  it("returns 6 when three modules selected", () => {
+    expect(getTotalSteps({ ...INITIAL_WIZARD_STATE, projectType: "ecommerce", modules: ["catalog", "checkout", "auth"] })).toBe(6);
   });
 });
