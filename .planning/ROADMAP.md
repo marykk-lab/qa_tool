@@ -110,7 +110,7 @@
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
 | 2. Wizard | 3/3 | Complete | 2026-06-07 |
 | 3. Generation & Output | 2/2 | Complete | 2026-06-07 |
-| 4. Wizard Sub-steps & Feature Filtering | 0/3 | In Progress | -- |
+| 4. Wizard Sub-steps & Feature Filtering | 0/3 | Planned | — |
 
 ---
 

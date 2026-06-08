@@ -1,17 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
+milestone: v1.1
 milestone_name: milestone
-current_phase: 3 — Generation & Output
-current_plan: complete
-status: phase_complete
-last_updated: "2026-06-07T00:00:00.000Z"
+current_phase: 4 — Wizard Sub-steps & Feature Filtering
+current_plan: not started
+status: Ready to execute
+last_updated: "2026-06-08T00:00:00.000Z"
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 3
-  total_plans: 6
+  total_plans: 9
   completed_plans: 6
-  percent: 100
+  percent: 75
 ---
 
 # Project State: QA Test Constructor
@@ -30,13 +30,13 @@ progress:
 
 ## Current Position
 
-**Current Phase:** 3 — Generation & Output
-**Current Plan:** 03-01-PLAN.md (Wave 1 — Config & Wiring)
-**Phase Status:** Planned — 2 plans in 2 waves
-**Overall Status:** Phase 2 complete — 2/3 phases done, Phase 3 ready to execute
+**Current Phase:** 4 — Wizard Sub-steps & Feature Filtering
+**Current Plan:** Not started — needs `/gsd-plan-phase 4`
+**Phase Status:** Planned (task spec in `.planning/phases/04-ai-wizard-substeps/04-TASK-SPEC.md`)
+**Overall Status:** Phases 1–3 complete (v1.0 shipped). Phase 4 adds dynamic module sub-steps + feature-based JSON filtering + Feedboon output table format. Still deterministic — no AI/backend.
 
 ```
-Progress: [███████░░░] 67% (2/3 phases complete, Phase 3 not started)
+Progress: [██████████░░░] 75% (3/4 phases complete, Phase 4 not started)
 ```
 
 ---
@@ -47,7 +47,8 @@ Progress: [███████░░░] 67% (2/3 phases complete, Phase 3 not
 |-------|------|--------|
 | 1 | Foundation | Complete ✓ |
 | 2 | Wizard | Complete ✓ |
-| 3 | Generation & Output | Planned (2 plans) |
+| 3 | Generation & Output | Complete ✓ |
+| 4 | Wizard Sub-steps & Feature Filtering | Planned — needs `/gsd-plan-phase 4` |
 
 ---
 
@@ -107,7 +108,7 @@ Progress: [███████░░░] 67% (2/3 phases complete, Phase 3 not
 
 ## Session Continuity
 
-**To resume:** Run `/gsd:discuss-phase 3` or `/gsd:plan-phase 3` to plan Phase 3 (Generation & Output).
+**To resume:** Run `/gsd-plan-phase 4` to plan Phase 4 (AI Wizard Sub-steps & AI Generation). Task spec is at `.planning/phases/04-ai-wizard-substeps/04-TASK-SPEC.md`.
 
 **Context for next session:**
 
