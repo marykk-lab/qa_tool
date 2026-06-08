@@ -7,15 +7,21 @@ const PRIORITY_STYLES: Record<string, string> = {
   P2: "bg-zinc-800/60 text-zinc-400 border-zinc-700",
 };
 
+const PRIORITY_LABELS: Record<string, string> = {
+  P0: "P0 Critical",
+  P1: "P1 Important",
+  P2: "P2 Nice to have",
+};
+
 export function PriorityBadge({ priority }: { priority: "P0" | "P1" | "P2" }) {
   const style = PRIORITY_STYLES[priority] ?? "bg-zinc-800/60 text-zinc-400 border-zinc-700";
   return (
     <Badge
       variant="outline"
       className={cn("text-sm font-normal", style)}
-      aria-label={`${priority} пріоритет`}
+      aria-label={PRIORITY_LABELS[priority] ?? priority}
     >
-      {priority}
+      {PRIORITY_LABELS[priority] ?? priority}
     </Badge>
   );
 }
