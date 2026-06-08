@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { FileX } from "lucide-react";
+import { FileX, ChevronDown, ChevronRight, Trash2, Copy, ExternalLink } from "lucide-react";
 import type { WizardState, TestCase } from "@/lib/types";
 import { MODULE_TC_PREFIXES, MODULE_DISPLAY_NAMES, PROMO_TC_PREFIX } from "@/constants/wizard-config";
 import { PriorityBadge } from "./PriorityBadge";
@@ -94,32 +94,43 @@ function buildMarkdown(
     state.projectType === "ecommerce" ? "E-commerce" : "Інформаційний сайт";
   const todayISO = new Date().toISOString().slice(0, 10);
 
-  let output = `# Результати тестування — ${projectTypeLabel} — ${todayISO}`;
-
+  // Build suite map from all filtered cases
+  const suiteMap = new Map<string, TestCase[]>();
   for (const moduleId of modules) {
     const cases = casesByModule.get(moduleId) ?? [];
-    if (cases.length === 0) continue;
-
-    output += `\n\n## ${MODULE_DISPLAY_NAMES[moduleId]} (${cases.length})\n`;
-    output +=
-      "| ID | Назва | Передумови | Кроки | Очікуваний результат | Type | Layer | Пріоритет |\n";
-    output +=
-      "|----|-------|------------|-------|----------------------|------|-------|-----------|\n";
-
     for (const tc of cases) {
-      const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join("<br>");
+      if (!suiteMap.has(tc.Suite)) suiteMap.set(tc.Suite, []);
+      suiteMap.get(tc.Suite)!.push(tc);
+    }
+  }
+
+  const PRIORITY_LABELS: Record<string, string> = {
+    P0: "P0 Critical",
+    P1: "P1 Important",
+    P2: "P2 Nice to have",
+  };
+
+  function sanitize(val: string): string {
+    return val.replace(/\|/g, "/");
+  }
+
+  let output = `# Результати тестування — ${projectTypeLabel} — ${todayISO}`;
+
+  for (const [suiteName, cases] of suiteMap) {
+    output += `\n\n## ${suiteName}\n\n`;
+    output += "| Title | Steps | Expected Result | Preconditions | Priority | Status | Last Verified |\n";
+    output += "|-------|-------|-----------------|---------------|----------|--------|---------------|\n";
+    for (const tc of cases) {
+      const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join(" ");
       const row = [
-        tc.ID,
-        tc.Назва,
-        tc.Передумови,
-        steps,
-        tc["Очікуваний результат"],
-        tc.Type,
-        tc.Layer,
-        tc.Пріоритет,
-      ]
-        .map((cell) => cell.replace(/\|/g, "\\|"))
-        .join(" | ");
+        sanitize(tc.Назва),
+        sanitize(steps),
+        sanitize(tc["Очікуваний результат"]),
+        sanitize(tc.Передумови),
+        sanitize(PRIORITY_LABELS[tc.Пріоритет] ?? tc.Пріоритет),
+        "Not started",
+        "—",
+      ].join(" | ");
       output += `| ${row} |\n`;
     }
   }
@@ -132,30 +143,41 @@ function buildCsv(
   casesByModule: Map<string, TestCase[]>
 ): string {
   const BOM = "﻿";
-  const headerRow =
-    "ID,Name,Suite,Preconditions,Steps,Expected,Type,Layer,Priority\n";
+  const headerRow = "Title,Steps,Expected Result,Preconditions,Priority,Status,Last Verified\n";
+
+  const PRIORITY_LABELS: Record<string, string> = {
+    P0: "P0 Critical",
+    P1: "P1 Important",
+    P2: "P2 Nice to have",
+  };
 
   function escapeCell(value: string): string {
     const escaped = value.replace(/"/g, '""');
     return `"${escaped}"`;
   }
 
-  let dataRows = "";
-
+  // Group by suite for consistent ordering
+  const suiteMap = new Map<string, TestCase[]>();
   for (const moduleId of modules) {
     const cases = casesByModule.get(moduleId) ?? [];
     for (const tc of cases) {
+      if (!suiteMap.has(tc.Suite)) suiteMap.set(tc.Suite, []);
+      suiteMap.get(tc.Suite)!.push(tc);
+    }
+  }
+
+  let dataRows = "";
+  for (const cases of suiteMap.values()) {
+    for (const tc of cases) {
       const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join("\n");
       const row = [
-        escapeCell(tc.ID),
         escapeCell(tc.Назва),
-        escapeCell(tc.Suite),
-        escapeCell(tc.Передумови),
         escapeCell(steps),
         escapeCell(tc["Очікуваний результат"]),
-        escapeCell(tc.Type),
-        escapeCell(tc.Layer),
-        escapeCell(tc.Пріоритет),
+        escapeCell(tc.Передумови),
+        escapeCell(PRIORITY_LABELS[tc.Пріоритет] ?? tc.Пріоритет),
+        escapeCell("Not started"),
+        escapeCell("—"),
       ].join(",");
       dataRows += row + "\n";
     }
@@ -188,6 +210,21 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
   );
   const isEmpty = filteredModules.length === 0;
 
+  // State for collapsed suites — empty Set means all expanded
+  const [collapsedSuites, setCollapsedSuites] = useState<Set<string>>(new Set());
+
+  // Group filtered cases by Suite for rendering
+  const suiteMap = new Map<string, TestCase[]>();
+  for (const moduleId of filteredModules) {
+    const cases = casesByModule.get(moduleId) ?? [];
+    for (const tc of cases) {
+      const suite = tc.Suite;
+      if (!suiteMap.has(suite)) suiteMap.set(suite, []);
+      suiteMap.get(suite)!.push(tc);
+    }
+  }
+  const suiteNames = Array.from(suiteMap.keys());
+
   // Empty state
   if (isEmpty) {
     return (
@@ -213,111 +250,93 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
         Результати тестування
       </h2>
 
-      {/* Module blocks */}
-      {filteredModules.map((moduleId) => {
-        const cases = casesByModule.get(moduleId) ?? [];
+      {/* Suite blocks */}
+      {suiteNames.map((suiteName) => {
+        const cases = suiteMap.get(suiteName) ?? [];
+        const isCollapsed = collapsedSuites.has(suiteName);
         return (
-          <div key={moduleId} className="mb-6 last:mb-0">
-            <h3 className="text-xl font-semibold text-foreground mb-4">
-              {MODULE_DISPLAY_NAMES[moduleId]} ({cases.length})
-            </h3>
-            <div
-              className="w-full overflow-x-auto rounded-md border border-border"
-              role="region"
-              aria-label={`Тест кейси — ${MODULE_DISPLAY_NAMES[moduleId]}`}
+          <div key={suiteName} className="mb-6 last:mb-0">
+            {/* Collapsible suite header */}
+            <button
+              type="button"
+              onClick={() => {
+                setCollapsedSuites((prev) => {
+                  const next = new Set(prev);
+                  if (next.has(suiteName)) next.delete(suiteName);
+                  else next.add(suiteName);
+                  return next;
+                });
+              }}
+              className="flex items-center gap-2 w-full text-left mb-4 group"
+              aria-expanded={!isCollapsed}
             >
-              <table className="w-full text-sm text-foreground">
-                <thead>
-                  <tr className="bg-card border-b border-border">
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[110px]"
-                    >
-                      ID
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]"
-                    >
-                      Назва
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[180px]"
-                    >
-                      Передумови
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[200px]"
-                    >
-                      Кроки
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[180px]"
-                    >
-                      Очікуваний результат
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[80px]"
-                    >
-                      Type
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[100px]"
-                    >
-                      Layer
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[90px]"
-                    >
-                      Пріоритет
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cases.map((tc) => (
-                    <tr
-                      key={tc.ID}
-                      className="border-b border-border last:border-0 hover:bg-secondary/30"
-                    >
-                      <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">
-                        {tc.ID}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-normal align-top text-foreground">
-                        {tc.Назва}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-normal align-top text-foreground">
-                        {tc.Передумови}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-normal align-top">
-                        <ol className="space-y-1 text-foreground list-none">
-                          {tc.Кроки.map((step, i) => (
-                            <li key={i}>{step}</li>
-                          ))}
-                        </ol>
-                      </td>
-                      <td className="px-4 py-3 text-sm font-normal align-top text-foreground">
-                        {tc["Очікуваний результат"]}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">
-                        {tc.Type}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">
-                        {tc.Layer}
-                      </td>
-                      <td className="px-4 py-3 align-top">
-                        <PriorityBadge priority={tc.Пріоритет} />
-                      </td>
+              {isCollapsed
+                ? <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                : <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              }
+              <span className="text-xl font-semibold text-foreground">{suiteName}</span>
+              <span className="text-sm text-muted-foreground ml-1">{cases.length}</span>
+            </button>
+            {/* Table — hidden when collapsed */}
+            {!isCollapsed && (
+              <div
+                className="w-full overflow-x-auto rounded-md border border-border"
+                role="region"
+                aria-label={`Тест кейси — ${suiteName}`}
+              >
+                <table className="w-full text-sm text-foreground">
+                  <thead>
+                    <tr className="bg-card border-b border-border">
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]">Title</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[200px]">Steps</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[180px]">Expected Result</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]">Preconditions</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[130px]">Priority</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[110px]">Status</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[120px]">Last Verified</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {cases.map((tc) => (
+                      <tr
+                        key={tc.ID}
+                        className="border-b border-border last:border-0 hover:bg-secondary/30 group/row"
+                      >
+                        <td className="px-4 py-3 text-sm font-normal align-top text-foreground">
+                          <div className="flex items-start justify-between gap-2">
+                            <span>{tc.Назва}</span>
+                            {/* Row hover action icons — visual only (v1) */}
+                            <div className="hidden group-hover/row:flex items-center gap-1 shrink-0">
+                              <button type="button" aria-label="Видалити" className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground">
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button type="button" aria-label="Дублювати" className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground">
+                                <Copy className="w-3.5 h-3.5" />
+                              </button>
+                              <button type="button" aria-label="Відкрити" className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground">
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-normal align-top">
+                          <ol className="space-y-1 text-foreground list-none">
+                            {tc.Кроки.map((step, i) => (
+                              <li key={i}>{step}</li>
+                            ))}
+                          </ol>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-foreground">{tc["Очікуваний результат"]}</td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-foreground">{tc.Передумови}</td>
+                        <td className="px-4 py-3 align-top"><PriorityBadge priority={tc.Пріоритет} /></td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">Not started</td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">—</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         );
       })}
