@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { INITIAL_WIZARD_STATE, type WizardState, type TestCase } from "@/lib/types";
-import { getTotalSteps, hasDetailStep } from "@/constants/wizard-config";
+import { getTotalSteps, MODULE_FEATURES, MODULE_DISPLAY_NAMES } from "@/constants/wizard-config";
 import { Card, CardContent } from "@/components/ui/card";
 import StepProjectType from "./StepProjectType";
 import StepPlatform from "./StepPlatform";
 import StepModules from "./StepModules";
-import StepDetails from "./StepDetails";
+import StepModuleFeatures from "./StepModuleFeatures";
 import WizardNav from "./WizardNav";
 import ResultsView from "./ResultsView";
 
@@ -21,9 +21,9 @@ export default function Wizard({ initialCases }: WizardProps) {
   const [state, setState] = useState<WizardState>(INITIAL_WIZARD_STATE);
 
   const totalSteps = getTotalSteps(state);
+  const isCompletion = currentStep > totalSteps;
 
   function handleNext() {
-    // Validation guards — show Sonner toast on failure
     if (currentStep === 1 && !state.projectType) {
       toast.error("Будь ласка, оберіть тип проекту");
       return;
@@ -36,18 +36,13 @@ export default function Wizard({ initialCases }: WizardProps) {
       toast.error("Оберіть принаймні один модуль для тестування");
       return;
     }
-    // After step 3: skip step 4 if no qualifying modules
-    if (currentStep === 3 && !hasDetailStep(state)) {
-      setCurrentStep(5); // 5 = completion
-      return;
-    }
     setCurrentStep((prev) => prev + 1);
   }
 
   function handleBack() {
-    // After skip: if on completion (step 5) with no detail step, go back to step 3
-    if (currentStep === 5 && !hasDetailStep(state)) {
-      setCurrentStep(3);
+    if (isCompletion) {
+      // Go back to last sub-step (or step 3 if 0 modules)
+      setCurrentStep(totalSteps);
       return;
     }
     setCurrentStep((prev) => Math.max(1, prev - 1));
@@ -66,7 +61,7 @@ export default function Wizard({ initialCases }: WizardProps) {
           onNext={handleNext}
           onBack={handleBack}
           state={state}
-          isCompletion={currentStep === 5}
+          isCompletion={isCompletion}
         />
         {currentStep === 1 && (
           <StepProjectType
@@ -92,10 +87,22 @@ export default function Wizard({ initialCases }: WizardProps) {
             onChange={(modules) => updateState({ modules })}
           />
         )}
-        {currentStep === 4 && (
-          <StepDetails state={state} onChange={updateState} />
-        )}
-        {currentStep === 5 && (
+        {state.modules.map((moduleId, index) => {
+          const subStep = 4 + index;
+          return currentStep === subStep ? (
+            <StepModuleFeatures
+              key={moduleId}
+              moduleId={moduleId}
+              moduleName={MODULE_DISPLAY_NAMES[moduleId] ?? moduleId}
+              features={MODULE_FEATURES[moduleId] ?? []}
+              selected={state.moduleFeatures[moduleId] ?? []}
+              onChange={(v) =>
+                updateState({ moduleFeatures: { ...state.moduleFeatures, [moduleId]: v } })
+              }
+            />
+          ) : null;
+        })}
+        {isCompletion && (
           <ResultsView
             state={state}
             allCases={initialCases}
