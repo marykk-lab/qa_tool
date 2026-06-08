@@ -13,6 +13,7 @@
 - [x] **Phase 1: Foundation** - Next.js + Tailwind scaffold, project structure, JSON library skeleton, Vercel deployment config
 - [x] **Phase 2: Wizard** - Full multi-step question flow for both project types with navigation, progress indicator, and test case JSON library
 - [x] **Phase 3: Generation & Output** - Deterministic case generation, result table, Markdown export actions, Feedboon styling, tablet layout
+- [ ] **Phase 4: Wizard Sub-steps & Feature Filtering** - Dynamic per-module feature sub-steps, feature-based JSON filtering, updated output table to Feedboon column format
 
 ---
 
@@ -68,13 +69,37 @@
   3. "Download .md" downloads a file named `test-cases_{type}_{date}.md` containing the same Markdown table
   4. "Export to Notion (.csv)" downloads a UTF-8 CSV file with columns ID, Name, Preconditions, Steps, Expected, Priority, Module — importable into Notion as a database
   5. "Почати заново" resets all state and returns to step 1 of the wizard
-  6. The UI applies the Feedboon dark theme: `#0a0a0a` background, `#171717` cards, `#3ecf8e` green accent, light text; renders correctly on desktop and tablet (≥768px)
+  6. The UI applies the Feedboon dark theme: `#0a0a0a` background, `#171717` cards, `#3ecf8e` green accent, light text; renders correctly on desktop and tablet (>=768px)
 **Plans**: 2 plans
   **Wave 1:**
   - [x] 03-01-PLAN.md — Config + wiring: MODULE_TC_PREFIXES/DISPLAY_NAMES/PROMO constants, async page.tsx data load, Wizard initialCases prop, WizardNav isCompletion fix
   **Wave 2** *(blocked on Wave 1 completion)*:
   - [x] 03-02-PLAN.md — Results components: PriorityBadge, ResultsView (generation logic, grouped table, action buttons, exports), Wizard step 5 wiring
 **UI hint**: yes
+
+---
+
+### Phase 4: Wizard Sub-steps & Feature Filtering
+**Goal**: For each selected module, a sub-step collects which features exist in the project; the generation filters the JSON library to only include test cases matching the checked features; output table updated to Feedboon column format.
+**Mode:** mvp
+**Depends on**: Phase 3
+**Requirements**: WIZ-10, WIZ-11, WIZ-12, GEN-05, GEN-06, OUT-06, OUT-07, OUT-08
+**Success Criteria** (what must be TRUE):
+  1. Selecting N modules inserts N sub-steps after step 3; counter shows "Крок 3+k з 3+N" correctly
+  2. Each sub-step shows the correct feature checklist for its module; checked features preserved on back/forward navigation
+  3. Selecting 0 modules -> no sub-steps, wizard works normally
+  4. Unchecking a module in step 3 -> its sub-step is removed and counter updates immediately
+  5. Generation filters JSON entries by "Feature" field when features are checked; entries without "Feature" always included; no features checked -> all entries for that module included
+  6. Output table has exactly 7 columns: Title, Steps, Expected Result, Preconditions, Priority (colored badge), Status (Not started), Last Verified (--)
+  7. Results grouped by Suite with collapsible headers showing case count
+  8. Markdown export groups by Suite as `## SuiteName` headers; no `|` in cell content
+**Plans**: 3 plans
+  **Wave 1:**
+  - [ ] 04-01-PLAN.md — Types + Config + StepModuleFeatures + Wizard routing: WizardState.moduleFeatures, MODULE_FEATURES, getTotalSteps update, new component, dynamic sub-step navigation
+  **Wave 2** *(blocked on Wave 1 completion)*:
+  - [ ] 04-02-PLAN.md — JSON Feature annotation + filterCasesForModule: annotate all 10 JSON files with Feature field, update filtering logic with moduleFeatures parameter
+  **Wave 3** *(blocked on Wave 2 completion)*:
+  - [ ] 04-03-PLAN.md — ResultsView overhaul: 7-column Suite-grouped table, collapsible headers, row hover icons, PriorityBadge expanded labels, buildMarkdown/buildCsv updated
 
 ---
 
@@ -85,6 +110,7 @@
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
 | 2. Wizard | 3/3 | Complete | 2026-06-07 |
 | 3. Generation & Output | 2/2 | Complete | 2026-06-07 |
+| 4. Wizard Sub-steps & Feature Filtering | 0/3 | Planned | — |
 
 ---
 
@@ -112,9 +138,19 @@
 | OUT-05 | Phase 3 |
 | UI-01 | Phase 3 |
 | UI-02 | Phase 3 |
+| UI-03 | Phase 2 |
+| WIZ-10 | Phase 4 |
+| WIZ-11 | Phase 4 |
+| WIZ-12 | Phase 4 |
+| GEN-05 | Phase 4 |
+| GEN-06 | Phase 4 |
+| OUT-06 | Phase 4 |
+| OUT-07 | Phase 4 |
+| OUT-08 | Phase 4 |
 
-**Mapped:** 19/19 ✓ (Phase 1 is pure scaffold with no assigned requirement IDs)
+**Mapped:** 28/28 (Phase 1 is pure scaffold with no assigned requirement IDs)
 
 ---
 
 *Roadmap created: 2026-06-04*
+*Last updated: 2026-06-08 — Phase 4 plans added*

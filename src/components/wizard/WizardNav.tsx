@@ -15,18 +15,11 @@ type Props = {
 
 // Derives whether "Далі" should be enabled for the current step
 function canAdvance(step: number, state: WizardState): boolean {
-  switch (step) {
-    case 1:
-      return state.projectType !== null;
-    case 2:
-      return state.platform !== null;
-    case 3:
-      return state.modules.length > 0;
-    case 4:
-      return true; // details are optional
-    default:
-      return false;
-  }
+  if (step === 1) return state.projectType !== null;
+  if (step === 2) return state.platform !== null;
+  if (step === 3) return state.modules.length > 0;
+  if (step >= 4) return true; // sub-steps: features are optional
+  return false;
 }
 
 export default function WizardNav({
