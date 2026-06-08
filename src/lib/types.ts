@@ -52,6 +52,8 @@ export type TestCase = {
 
   /**
    * Optional feature tag matching MODULE_FEATURES key values — used for feature-based filtering in Phase 4.
+   * Must match one of the MODULE_FEATURES strings for the test case's module.
+   * Entries without Feature always pass through the feature filter.
    */
   Feature?: string;
 };
