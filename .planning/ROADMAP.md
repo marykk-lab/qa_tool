@@ -13,7 +13,7 @@
 - [x] **Phase 1: Foundation** - Next.js + Tailwind scaffold, project structure, JSON library skeleton, Vercel deployment config
 - [x] **Phase 2: Wizard** - Full multi-step question flow for both project types with navigation, progress indicator, and test case JSON library
 - [x] **Phase 3: Generation & Output** - Deterministic case generation, result table, Markdown export actions, Feedboon styling, tablet layout
-- [ ] **Phase 4: Wizard Sub-steps & Feature Filtering** - Dynamic per-module feature sub-steps, feature-based JSON filtering, updated output table to Feedboon column format
+- [x] **Phase 4: Wizard Sub-steps & Feature Filtering** - Dynamic per-module feature sub-steps, feature-based JSON filtering, updated output table to Feedboon column format
 
 ---
 
@@ -95,11 +95,11 @@
   8. Markdown export groups by Suite as `## SuiteName` headers; no `|` in cell content
 **Plans**: 3 plans
   **Wave 1:**
-  - [ ] 04-01-PLAN.md — Types + Config + StepModuleFeatures + Wizard routing: WizardState.moduleFeatures, MODULE_FEATURES, getTotalSteps update, new component, dynamic sub-step navigation
+  - [x] 04-01-PLAN.md — Types + Config + StepModuleFeatures + Wizard routing: WizardState.moduleFeatures, MODULE_FEATURES, getTotalSteps update, new component, dynamic sub-step navigation
   **Wave 2** *(blocked on Wave 1 completion)*:
-  - [ ] 04-02-PLAN.md — JSON Feature annotation + filterCasesForModule: annotate all 10 JSON files with Feature field, update filtering logic with moduleFeatures parameter
+  - [x] 04-02-PLAN.md — JSON Feature annotation + filterCasesForModule: annotate all 10 JSON files with Feature field, update filtering logic with moduleFeatures parameter
   **Wave 3** *(blocked on Wave 2 completion)*:
-  - [ ] 04-03-PLAN.md — ResultsView overhaul: 7-column Suite-grouped table, collapsible headers, row hover icons, PriorityBadge expanded labels, buildMarkdown/buildCsv updated
+  - [x] 04-03-PLAN.md — ResultsView overhaul: 7-column Suite-grouped table, collapsible headers, row hover icons, PriorityBadge expanded labels, buildMarkdown/buildCsv updated
 
 ---
 
@@ -110,7 +110,7 @@
 | 1. Foundation | 1/1 | Complete | 2026-06-04 |
 | 2. Wizard | 3/3 | Complete | 2026-06-07 |
 | 3. Generation & Output | 2/2 | Complete | 2026-06-07 |
-| 4. Wizard Sub-steps & Feature Filtering | 0/3 | Planned | — |
+| 4. Wizard Sub-steps & Feature Filtering | 3/3 | Complete | 2026-06-08 |
 
 ---
 
