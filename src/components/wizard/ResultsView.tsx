@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { FileX, ChevronDown, ChevronRight, Trash2, Copy, ExternalLink } from "lucide-react";
 import type { WizardState, TestCase } from "@/lib/types";
-import { MODULE_TC_PREFIXES, MODULE_DISPLAY_NAMES, PROMO_TC_PREFIX } from "@/constants/wizard-config";
+import { MODULE_TC_PREFIXES, PROMO_TC_PREFIX } from "@/constants/wizard-config";
 import { PriorityBadge } from "./PriorityBadge";
 
 type Props = {
@@ -25,20 +25,16 @@ function filterCasesForModule(
 ): TestCase[] {
   const prefixes = [...(MODULE_TC_PREFIXES[moduleId] ?? [])];
 
-  // Return early for modules with no JSON data
   if (prefixes.length === 0) return [];
 
-  // Checkout: conditionally include promo-code cases
   if (moduleId === "checkout" && state.checkoutDetails?.hasPromoCode === true) {
     prefixes.push(PROMO_TC_PREFIX);
   }
 
-  // Filter by prefix
   let cases = allCases.filter((tc) =>
     prefixes.some((p) => tc.ID.startsWith(p))
   );
 
-  // Apply ID-based exclusions based on detail flags
   if (moduleId === "checkout") {
     if (state.checkoutDetails?.hasGuestCheckout === false) {
       cases = cases.filter((tc) => tc.ID !== "TC-CHK-003");
@@ -72,10 +68,6 @@ function filterCasesForModule(
     }
   }
 
-  // auth: hasSocialLogin / hasOrderHistory have no effect — no TC-AUTH cases carry those exclusion IDs yet;
-  // use feature filtering via StepModuleFeatures to suppress unwanted auth cases instead
-
-  // Feature filtering (Phase 4, per D-12)
   const selectedFeatures = moduleFeatures[moduleId] ?? [];
   if (selectedFeatures.length > 0) {
     cases = cases.filter(
@@ -86,51 +78,35 @@ function filterCasesForModule(
   return cases;
 }
 
-function buildMarkdown(
-  modules: string[],
-  state: WizardState,
-  casesByModule: Map<string, TestCase[]>
-): string {
-  const projectTypeLabel =
-    state.projectType === "ecommerce" ? "E-commerce" : "Інформаційний сайт";
-  const todayISO = new Date().toISOString().slice(0, 10);
+const PRIORITY_LABELS: Record<string, string> = {
+  P0: "P0 Critical",
+  P1: "P1 Important",
+  P2: "P2 Nice to have",
+};
 
-  // Build suite map from all filtered cases
-  const suiteMap = new Map<string, TestCase[]>();
-  for (const moduleId of modules) {
-    const cases = casesByModule.get(moduleId) ?? [];
-    for (const tc of cases) {
-      if (!suiteMap.has(tc.Suite)) suiteMap.set(tc.Suite, []);
-      suiteMap.get(tc.Suite)!.push(tc);
-    }
-  }
+function sanitize(val: string): string {
+  return val.replace(/\|/g, "/");
+}
 
-  const PRIORITY_LABELS: Record<string, string> = {
-    P0: "P0 Critical",
-    P1: "P1 Important",
-    P2: "P2 Nice to have",
-  };
+function buildMarkdown(suiteMap: Map<string, TestCase[]>): string {
+  let output = "| Suite | Test Case | Priority | Status | Preconditions | Steps | Expected Result | Test Data | Test Layer | Test Type | Last Verified |\n";
+  output += "|-------|-----------|----------|--------|---------------|-------|-----------------|-----------|------------|-----------|---------------|\n";
 
-  function sanitize(val: string): string {
-    return val.replace(/\|/g, "/");
-  }
-
-  let output = `# Результати тестування — ${projectTypeLabel} — ${todayISO}`;
-
-  for (const [suiteName, cases] of suiteMap) {
-    output += `\n\n## ${suiteName}\n\n`;
-    output += "| Title | Steps | Expected Result | Preconditions | Priority | Status | Last Verified |\n";
-    output += "|-------|-------|-----------------|---------------|----------|--------|---------------|\n";
+  for (const [, cases] of suiteMap) {
     for (const tc of cases) {
       const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join(" ");
       const row = [
+        sanitize(tc.Suite),
         sanitize(tc.Назва),
-        sanitize(steps),
-        sanitize(tc["Очікуваний результат"]),
-        sanitize(tc.Передумови),
         sanitize(PRIORITY_LABELS[tc.Пріоритет] ?? tc.Пріоритет),
         "Not started",
-        "—",
+        sanitize(tc.Передумови),
+        sanitize(steps),
+        sanitize(tc["Очікуваний результат"]),
+        sanitize(tc["Тестові дані"]),
+        sanitize(tc.Layer),
+        sanitize(tc.Type),
+        "",
       ].join(" | ");
       output += `| ${row} |\n`;
     }
@@ -139,32 +115,13 @@ function buildMarkdown(
   return output;
 }
 
-function buildCsv(
-  modules: string[],
-  casesByModule: Map<string, TestCase[]>
-): string {
+function buildCsv(suiteMap: Map<string, TestCase[]>): string {
   const BOM = "﻿";
-  const headerRow = "Title,Steps,Expected Result,Preconditions,Priority,Status,Last Verified\n";
-
-  const PRIORITY_LABELS: Record<string, string> = {
-    P0: "P0 Critical",
-    P1: "P1 Important",
-    P2: "P2 Nice to have",
-  };
+  const headerRow = "Suite,Test Case,Priority,Status,Preconditions,Steps,Expected Result,Test Data,Test Layer,Test Type,Last Verified\n";
 
   function escapeCell(value: string): string {
     const escaped = value.replace(/"/g, '""');
     return `"${escaped}"`;
-  }
-
-  // Group by suite for consistent ordering
-  const suiteMap = new Map<string, TestCase[]>();
-  for (const moduleId of modules) {
-    const cases = casesByModule.get(moduleId) ?? [];
-    for (const tc of cases) {
-      if (!suiteMap.has(tc.Suite)) suiteMap.set(tc.Suite, []);
-      suiteMap.get(tc.Suite)!.push(tc);
-    }
   }
 
   let dataRows = "";
@@ -172,13 +129,17 @@ function buildCsv(
     for (const tc of cases) {
       const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join("\n");
       const row = [
+        escapeCell(tc.Suite),
         escapeCell(tc.Назва),
-        escapeCell(steps),
-        escapeCell(tc["Очікуваний результат"]),
-        escapeCell(tc.Передумови),
         escapeCell(PRIORITY_LABELS[tc.Пріоритет] ?? tc.Пріоритет),
         escapeCell("Not started"),
-        escapeCell("—"),
+        escapeCell(tc.Передумови),
+        escapeCell(steps),
+        escapeCell(tc["Очікуваний результат"]),
+        escapeCell(tc["Тестові дані"]),
+        escapeCell(tc.Layer),
+        escapeCell(tc.Type),
+        escapeCell(""),
       ].join(",");
       dataRows += row + "\n";
     }
@@ -202,7 +163,7 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ResultsView({ state, allCases, onRestart }: Props) {
-  const { filteredModules, casesByModule, suiteMap, suiteNames, isEmpty } = useMemo(() => {
+  const { suiteMap, isEmpty } = useMemo(() => {
     const filtered = state.modules.filter(
       (m) => filterCasesForModule(m, state, state.moduleFeatures, allCases).length > 0
     );
@@ -217,16 +178,66 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
       }
     }
     return {
-      filteredModules: filtered,
-      casesByModule: byModule,
       suiteMap: suites,
-      suiteNames: Array.from(suites.keys()),
       isEmpty: filtered.length === 0,
     };
   }, [state, allCases]);
 
-  // State for collapsed suites — empty Set means all expanded
+  // Local mutable copy — tracks user deletes and duplicates
+  const [localSuiteMap, setLocalSuiteMap] = useState<Map<string, TestCase[]>>(() =>
+    new Map(Array.from(suiteMap.entries()).map(([k, v]) => [k, [...v]]))
+  );
+
+  const localSuiteNames = Array.from(localSuiteMap.keys()).filter(
+    (k) => (localSuiteMap.get(k)?.length ?? 0) > 0
+  );
+
   const [collapsedSuites, setCollapsedSuites] = useState<Set<string>>(new Set());
+
+  function handleDelete(suiteName: string, tcId: string) {
+    setLocalSuiteMap((prev) => {
+      const next = new Map(prev);
+      next.set(suiteName, (next.get(suiteName) ?? []).filter((t) => t.ID !== tcId));
+      return next;
+    });
+    toast.success("Тест кейс видалено");
+  }
+
+  function handleDuplicate(suiteName: string, tc: TestCase) {
+    setLocalSuiteMap((prev) => {
+      const next = new Map(prev);
+      const cases = [...(next.get(suiteName) ?? [])];
+      const idx = cases.findIndex((t) => t.ID === tc.ID);
+      const dup: TestCase = { ...tc, ID: `${tc.ID}-copy` };
+      cases.splice(idx + 1, 0, dup);
+      next.set(suiteName, cases);
+      return next;
+    });
+    toast.success("Тест кейс продубльовано");
+  }
+
+  async function handleCopyRow(tc: TestCase) {
+    const steps = tc.Кроки.map((s, i) => `${i + 1}. ${s}`).join(" ");
+    const text = `| ${[
+      tc.Suite,
+      tc.Назва,
+      PRIORITY_LABELS[tc.Пріоритет] ?? tc.Пріоритет,
+      "Not started",
+      tc.Передумови,
+      steps,
+      tc["Очікуваний результат"],
+      tc["Тестові дані"],
+      tc.Layer,
+      tc.Type,
+      "",
+    ].join(" | ")} |`;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Рядок скопійовано в буфер обміну");
+    } catch {
+      toast.error("Не вдалося скопіювати рядок");
+    }
+  }
 
   // Empty state
   if (isEmpty) {
@@ -254,8 +265,8 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
       </h2>
 
       {/* Suite blocks */}
-      {suiteNames.map((suiteName) => {
-        const cases = suiteMap.get(suiteName) ?? [];
+      {localSuiteNames.map((suiteName) => {
+        const cases = localSuiteMap.get(suiteName) ?? [];
         const isCollapsed = collapsedSuites.has(suiteName);
         return (
           <div key={suiteName} className="mb-6 last:mb-0">
@@ -290,12 +301,15 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                 <table className="w-full text-sm text-foreground">
                   <thead>
                     <tr className="bg-card border-b border-border">
-                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]">Title</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]">Test Case</th>
                       <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[200px]">Steps</th>
                       <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[180px]">Expected Result</th>
                       <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]">Preconditions</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground min-w-[160px]">Test Data</th>
                       <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[130px]">Priority</th>
                       <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[110px]">Status</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[100px]">Test Layer</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[100px]">Test Type</th>
                       <th scope="col" className="px-4 py-3 text-left text-sm font-normal text-muted-foreground w-[120px]">Last Verified</th>
                     </tr>
                   </thead>
@@ -303,20 +317,38 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                     {cases.map((tc) => (
                       <tr
                         key={tc.ID}
-                        className="border-b border-border last:border-0 hover:bg-secondary/30 group/row"
+                        className="border-b border-border last:border-0 hover:bg-secondary/30"
                       >
                         <td className="px-4 py-3 text-sm font-normal align-top text-foreground">
                           <div className="flex items-start justify-between gap-2">
                             <span>{tc.Назва}</span>
-                            {/* Row hover action icons — visual only (v1) */}
-                            <div className="hidden group-hover/row:flex items-center gap-1 shrink-0">
-                              <button type="button" aria-label="Видалити" className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground">
+                            {/* Row action buttons */}
+                            <div className="flex items-center gap-1 shrink-0">
+                              <button
+                                type="button"
+                                aria-label="Видалити"
+                                title="Видалити"
+                                onClick={() => handleDelete(suiteName, tc.ID)}
+                                className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"
+                              >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
-                              <button type="button" aria-label="Дублювати" className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground">
+                              <button
+                                type="button"
+                                aria-label="Дублювати"
+                                title="Дублювати"
+                                onClick={() => handleDuplicate(suiteName, tc)}
+                                className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"
+                              >
                                 <Copy className="w-3.5 h-3.5" />
                               </button>
-                              <button type="button" aria-label="Відкрити" className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground">
+                              <button
+                                type="button"
+                                aria-label="Копіювати рядок"
+                                title="Копіювати рядок"
+                                onClick={() => handleCopyRow(tc)}
+                                className="p-1 rounded hover:bg-secondary text-muted-foreground hover:text-foreground"
+                              >
                                 <ExternalLink className="w-3.5 h-3.5" />
                               </button>
                             </div>
@@ -325,15 +357,18 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                         <td className="px-4 py-3 text-sm font-normal align-top">
                           <ol className="space-y-1 text-foreground list-none">
                             {tc.Кроки.map((step, i) => (
-                              <li key={i}>{step}</li>
+                              <li key={i}>{i + 1}. {step}</li>
                             ))}
                           </ol>
                         </td>
                         <td className="px-4 py-3 text-sm font-normal align-top text-foreground">{tc["Очікуваний результат"]}</td>
                         <td className="px-4 py-3 text-sm font-normal align-top text-foreground">{tc.Передумови}</td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-foreground">{tc["Тестові дані"]}</td>
                         <td className="px-4 py-3 align-top"><PriorityBadge priority={tc.Пріоритет} /></td>
                         <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">Not started</td>
-                        <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">—</td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">{tc.Layer}</td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground">{tc.Type}</td>
+                        <td className="px-4 py-3 text-sm font-normal align-top text-muted-foreground"></td>
                       </tr>
                     ))}
                   </tbody>
@@ -350,7 +385,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
         <Button
           className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-sm font-semibold rounded-md"
           onClick={async () => {
-            const md = buildMarkdown(filteredModules, state, casesByModule);
+            const md = buildMarkdown(localSuiteMap);
             try {
               await navigator.clipboard.writeText(md);
               toast.success("Markdown скопійовано в буфер обміну");
@@ -369,7 +404,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
           variant="ghost"
           className="border border-primary text-primary hover:bg-primary/10 h-10 px-6 text-sm font-semibold rounded-md"
           onClick={() => {
-            const md = buildMarkdown(filteredModules, state, casesByModule);
+            const md = buildMarkdown(localSuiteMap);
             const filename = `test-cases_${state.projectType}_${new Date()
               .toISOString()
               .slice(0, 10)}.md`;
@@ -384,7 +419,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
           variant="ghost"
           className="border border-white/25 text-foreground hover:bg-secondary h-10 px-6 text-sm font-semibold rounded-md"
           onClick={() => {
-            const csv = buildCsv(filteredModules, casesByModule);
+            const csv = buildCsv(localSuiteMap);
             const filename = `test-cases_${state.projectType}_${new Date()
               .toISOString()
               .slice(0, 10)}.csv`;

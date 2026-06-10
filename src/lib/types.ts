@@ -27,6 +27,12 @@ export type TestCase = {
   "Очікуваний результат": string;
 
   /**
+   * Concrete realistic test data values (emails, amounts in UAH, dates, promo codes, etc.)
+   * relevant to the test case steps. Use «—» when no specific data input is required.
+   */
+  "Тестові дані": string;
+
+  /**
    * Test execution type.
    * E2E — manual browser walkthrough (default for most QA cases).
    * Manual — requires native device action (camera, biometrics, push, bank app).
@@ -38,9 +44,8 @@ export type TestCase = {
    * CI layer — when to run in the pipeline.
    * Smoke: 1–3 per suite, <30 s, on every deploy.
    * Regression: edge cases, before release.
-   * Feature: new flow, not yet stabilised.
    */
-  Layer: "Smoke" | "Regression" | "Feature";
+  Layer: "Smoke" | "Regression";
 
   /**
    * Business criticality.
