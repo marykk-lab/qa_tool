@@ -36,7 +36,7 @@ export default function StepModules({ projectType, selected, onChange }: Props) 
             key={m.id}
             onClick={() => handleCheck(m.id, !selected.includes(m.id))}
             className={cn(
-              "flex items-center space-x-3 min-h-[44px] border rounded-md p-4 cursor-pointer transition-colors",
+              "flex items-center space-x-3 min-h-11 border rounded-md p-4 cursor-pointer transition-colors",
               selected.includes(m.id)
                 ? "border-primary bg-card"
                 : "border-border bg-card hover:border-primary/40"

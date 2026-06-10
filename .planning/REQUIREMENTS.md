@@ -52,11 +52,30 @@
 - **INT-01**: Інтеграція як вкладки в платформу Feedboon
 - **INT-02**: Авторизація через Feedboon-аккаунт
 
+## v1.1 Requirements (Phase 4 — received 2026-06-08)
+
+### Wizard Sub-steps
+
+- [ ] **WIZ-10**: After module selection (step 3), dynamically insert a sub-step per selected module titled "{Module} — що є в модулі?" with multi-select feature checkboxes
+- [ ] **WIZ-11**: Step counter is dynamic: total = 3 base steps + number of selected modules; updates immediately when modules are added/removed in step 3
+- [ ] **WIZ-12**: Feature checkbox lists defined per module: Каталог, Сторінка товару (PDP), Кошик, Checkout, Авторизація, Пошук, Блог, Контактна форма, Багатомовність, Купони (see 04-TASK-SPEC.md for full lists)
+
+### Generation — Feature Filtering
+
+- [ ] **GEN-05**: Each JSON test case entry gains an optional `"Feature"` string field mapping it to a feature checklist item
+- [ ] **GEN-06**: Generation filters by checked features: if a module sub-step has features checked, only include entries whose `"Feature"` matches one of the checked values; entries without `"Feature"` are always included; if no features checked → include all entries (backwards compatible)
+
+### Output — Updated Table Schema
+
+- [ ] **OUT-06**: Output table columns changed to Feedboon format: Title, Steps, Expected Result, Preconditions, Priority, Status (always "Not started"), Last Verified (always "—")
+- [ ] **OUT-07**: Results grouped by Suite — each Suite is a collapsible header showing case count; Priority renders as colored badge (P0 Critical=red, P1 Important=yellow, P2 Nice to have=grey)
+- [ ] **OUT-08**: Markdown export groups by Suite using `## SuiteName` headers, no `|` characters inside cell content
+
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| AI-генерація кейсів | Явна вимога: тільки детермінована логіка |
+| AI-генерація кейсів | Явна вимога: тільки детермінована логіка — лишається поза скоупом |
 | Бекенд / база даних | Зайва складність для v1 — все на клієнті |
 | Мобільна версія (< 768px) | Desktop+tablet для v1; мобіль у v2 |
 | Авторизація / сесії | Не потрібна для standalone-режиму |
