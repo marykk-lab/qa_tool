@@ -298,19 +298,19 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                 role="region"
                 aria-label={`Тест кейси — ${suiteName}`}
               >
-                <table className="w-full text-sm text-foreground">
+                <table className="w-full text-xs text-foreground">
                   <thead>
                     <tr className="bg-card border-b border-border">
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground min-w-[150px]">Test Case</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground min-w-[200px]">Steps</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground min-w-[170px]">Expected Result</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground min-w-[140px]">Preconditions</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground min-w-[140px]">Test Data</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground w-[110px]">Priority</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground w-[90px]">Status</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground w-[90px]">Test Layer</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground w-[90px]">Test Type</th>
-                      <th scope="col" className="px-3 py-3 text-left text-sm font-normal text-muted-foreground w-[90px]">Last Verified</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground min-w-[150px]">Test Case</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground min-w-[200px]">Steps</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground min-w-[170px]">Expected Result</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground min-w-[140px]">Preconditions</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground min-w-[140px]">Test Data</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground w-[110px]">Priority</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground w-[90px]">Status</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground w-[90px]">Test Layer</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground w-[90px]">Test Type</th>
+                      <th scope="col" className="px-3 py-2 text-left text-xs font-normal text-muted-foreground w-[90px]">Last Verified</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -319,7 +319,7 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                         key={tc.ID}
                         className="border-b border-border last:border-0 hover:bg-secondary/30"
                       >
-                        <td className="px-3 py-3 text-sm font-normal align-top text-foreground">
+                        <td className="px-3 py-2 text-xs font-normal align-top text-foreground">
                           <div className="flex items-start justify-between gap-2">
                             <span>{tc.Назва}</span>
                             {/* Row action buttons */}
@@ -354,21 +354,21 @@ export default function ResultsView({ state, allCases, onRestart }: Props) {
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-sm font-normal align-top">
+                        <td className="px-3 py-2 text-xs font-normal align-top">
                           <ol className="space-y-1 text-foreground list-none">
                             {tc.Кроки.map((step, i) => (
                               <li key={i}>{i + 1}. {step}</li>
                             ))}
                           </ol>
                         </td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-foreground">{tc["Очікуваний результат"]}</td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-foreground">{tc.Передумови}</td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-foreground">{tc["Тестові дані"]}</td>
-                        <td className="px-3 py-3 align-top"><PriorityBadge priority={tc.Пріоритет} /></td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-muted-foreground">Not started</td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-muted-foreground">{tc.Layer}</td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-muted-foreground">{tc.Type}</td>
-                        <td className="px-3 py-3 text-sm font-normal align-top text-muted-foreground"></td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-foreground">{tc["Очікуваний результат"]}</td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-foreground">{tc.Передумови}</td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-foreground">{tc["Тестові дані"]}</td>
+                        <td className="px-3 py-2 align-top"><PriorityBadge priority={tc.Пріоритет} /></td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-muted-foreground">Not started</td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-muted-foreground">{tc.Layer}</td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-muted-foreground">{tc.Type}</td>
+                        <td className="px-3 py-2 text-xs font-normal align-top text-muted-foreground"></td>
                       </tr>
                     ))}
                   </tbody>
