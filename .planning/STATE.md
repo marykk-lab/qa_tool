@@ -16,7 +16,7 @@ progress:
 
 # Project State: QA Test Constructor
 
-*Last updated: 2026-06-04*
+*Last updated: 2026-06-10 — Completed quick task 260610-pey: тест-кейси та експорт приведені до 11-колонкової QA-таблиці*
 
 ---
 
@@ -97,6 +97,12 @@ Progress: [██████████░░░] 75% (3/4 phases complete, Ph
 ### Blockers
 
 - None currently
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260610-pey | Привести формат тест-кейсів у JSON та експорт до нової QA-таблиці (11 колонок) | 2026-06-10 | 0a5c13b | [260610-pey-json-qa-11](./quick/260610-pey-json-qa-11/) |
 
 ### Notes
 
