@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { INITIAL_WIZARD_STATE, type WizardState, type TestCase } from "@/lib/types";
 import { getTotalSteps, MODULE_FEATURES, MODULE_DISPLAY_NAMES } from "@/constants/wizard-config";
@@ -12,6 +12,9 @@ import StepModuleFeatures from "./StepModuleFeatures";
 import WizardNav from "./WizardNav";
 import ResultsView from "./ResultsView";
 
+const STORAGE_KEY = "qa-wizard-state";
+const STORAGE_VERSION = 1;
+
 type WizardProps = {
   initialCases: TestCase[];
 };
@@ -19,6 +22,28 @@ type WizardProps = {
 export default function Wizard({ initialCases }: WizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [state, setState] = useState<WizardState>(INITIAL_WIZARD_STATE);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.version === STORAGE_VERSION) {
+          setState(parsed.state ?? INITIAL_WIZARD_STATE);
+          setCurrentStep(parsed.step ?? 1);
+        }
+      }
+    } catch {}
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: STORAGE_VERSION, step: currentStep, state }));
+    } catch {}
+  }, [state, currentStep, hydrated]);
 
   const totalSteps = getTotalSteps(state);
   const isCompletion = currentStep > totalSteps;
@@ -108,6 +133,7 @@ export default function Wizard({ initialCases }: WizardProps) {
             state={state}
             allCases={initialCases}
             onRestart={() => {
+              try { localStorage.removeItem(STORAGE_KEY); } catch {}
               setState(INITIAL_WIZARD_STATE);
               setCurrentStep(1);
             }}
